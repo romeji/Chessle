@@ -27,8 +27,10 @@
     --radius:10px;
   }
   *{box-sizing:border-box;}
+  html{overflow-x:hidden;}
   body{
     margin:0;
+    overflow-x:hidden;
     background:
       radial-gradient(ellipse at top left, #1A2E24 0%, var(--bg) 55%);
     color:var(--text);
@@ -98,8 +100,43 @@
   button.btn.secondary{background:transparent;color:var(--ivory);border:1px solid var(--line);}
   button.btn.secondary:hover{border-color:var(--brass);}
   button.btn:disabled{opacity:0.5;cursor:not-allowed;}
-  #fetch-status{font-size:0.82rem;color:var(--text-dim);min-height:1.2em;}
+  #fetch-status{font-size:0.82rem;color:var(--text-dim);min-height:1.2em;line-height:1.5;}
   #analyze-btn{align-self:flex-start;margin-top:4px;}
+
+  .games-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+  .game-row{
+    display:grid;grid-template-columns:90px 1fr 70px 90px auto;gap:10px;align-items:center;
+    background:var(--bg-panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:0.82rem;
+  }
+  .game-row .g-date{color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:0.76rem;}
+  .game-row .g-opponent{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .game-row .g-color{color:var(--text-dim);}
+  .game-row .g-result{font-weight:600;font-size:0.78rem;}
+  .game-row .g-result.win{color:var(--good);}
+  .game-row .g-result.loss{color:var(--blunder);}
+  .game-row .g-result.draw{color:var(--inaccuracy);}
+  .game-row button{padding:6px 12px;font-size:0.78rem;}
+
+  /* ---- THEORY PANEL ---- */
+  .level-picker{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
+  .level-btn{
+    font-family:'Lora',serif;font-weight:600;font-size:0.9rem;
+    background:var(--bg-panel-2);color:var(--text);border:1px solid var(--line);
+    border-radius:var(--radius);padding:10px 18px;cursor:pointer;transition:border-color .15s ease;
+  }
+  .level-btn:hover{border-color:var(--brass);}
+  .level-btn.active{border-color:var(--brass);background:rgba(201,162,39,0.12);color:var(--ivory);}
+  .theory-intro{font-size:0.9rem;color:var(--text-dim);line-height:1.55;margin-bottom:22px;max-width:760px;}
+  .theory-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .theory-card{
+    background:var(--bg-panel-2);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .theory-card h4{
+    font-family:'Lora',serif;color:var(--brass);margin:0 0 8px;font-size:1rem;
+  }
+  .theory-card p{margin:0;font-size:0.87rem;line-height:1.6;color:var(--text);}
+  @media (max-width:760px){ .theory-grid{grid-template-columns:1fr;} }
 
   #analysis-progress{margin-top:18px;font-size:0.88rem;color:var(--text-dim);}
   #analysis-progress .bar-track{height:6px;background:var(--ink);border-radius:4px;overflow:hidden;margin-top:8px;}
@@ -120,6 +157,8 @@
   .board-frame{
     position:relative;
     display:inline-block;
+    max-width:100%;
+    box-sizing:border-box;
     padding:14px 14px 30px 32px;
     background:linear-gradient(160deg,#4A2E1B 0%, #8B5E3C 45%, #5E3A20 100%);
     border-radius:14px;
@@ -135,8 +174,8 @@
     display:flex;justify-content:space-around;align-items:center;
     font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--ivory);opacity:0.8;
   }
-  #board{width:400px;}
-  #train-board{width:380px;}
+  #board{width:400px;max-width:calc(92vw - 46px);}
+  #train-board{width:380px;max-width:calc(92vw - 46px);}
 
   /* ---- square highlight overlays (chessboard.js renders data-square on each square) ---- */
   .highlight-from{box-shadow:inset 0 0 0 9999px rgba(201,162,39,0.30) !important;}
@@ -269,6 +308,7 @@
     <nav class="tabs">
       <button id="tab-analyze" class="active">Analyse de partie</button>
       <button id="tab-train">Entraînement d'ouvertures</button>
+      <button id="tab-theory">Théorie par niveau</button>
     </nav>
   </header>
 
@@ -287,6 +327,7 @@
           <button class="btn secondary" id="fetch-btn">Récupérer la dernière partie</button>
         </div>
         <div id="fetch-status"></div>
+        <div class="games-list" id="games-list"></div>
       </div>
       <div><span class="engine-badge loading" id="engine-badge">Chargement du moteur Stockfish…</span></div>
       <button class="btn" id="analyze-btn">Analyser la partie</button>
@@ -358,22 +399,36 @@
       </div>
     </div>
   </section>
+
+  <!-- ================= THEORY PANEL ================= -->
+  <section id="panel-theory" class="panel">
+    <div class="level-picker" id="level-picker">
+      <button class="level-btn" data-level="beginner">Débutant (&lt; 1000)</button>
+      <button class="level-btn" data-level="intermediate">Intermédiaire (1000–1800)</button>
+      <button class="level-btn" data-level="advanced">Avancé (1800+)</button>
+    </div>
+    <div class="theory-intro" id="theory-intro"></div>
+    <div class="theory-grid" id="theory-grid"></div>
+  </section>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 <script>
-const PIECE_THEME = 'https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/img/chesspieces/wikipedia/{piece}.png';
+const PIECE_THEME = 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
 
 /* ============ TABS ============ */
 document.getElementById('tab-analyze').onclick = () => switchTab('analyze');
 document.getElementById('tab-train').onclick = () => switchTab('train');
+document.getElementById('tab-theory').onclick = () => switchTab('theory');
 function switchTab(name){
   document.getElementById('tab-analyze').classList.toggle('active', name==='analyze');
   document.getElementById('tab-train').classList.toggle('active', name==='train');
+  document.getElementById('tab-theory').classList.toggle('active', name==='theory');
   document.getElementById('panel-analyze').classList.toggle('active', name==='analyze');
   document.getElementById('panel-train').classList.toggle('active', name==='train');
+  document.getElementById('panel-theory').classList.toggle('active', name==='theory');
   if(name==='train' && trainBoard) setTimeout(()=>trainBoard.resize(), 50);
   if(name==='analyze' && analysisBoard) setTimeout(()=>analysisBoard.resize(), 50);
 }
@@ -609,7 +664,7 @@ let analysisResults = [];
 let analysisIndex = -1; // -1 = starting position
 
 analysisBoard = Chessboard('board', {
-  position:'start', draggable:false, pieceTheme: PIECE_THEME
+  position:'start', draggable:false, pieceTheme: PIECE_THEME, showNotation:false
 });
 renderCoords('board-ranks', 'board-files', 'white');
 
@@ -619,26 +674,87 @@ document.getElementById('analyze-btn').onclick = () => {
   runAnalysis(pgn);
 };
 
+let fetchedGames = [];
+
+async function fetchJsonWithFallback(url){
+  const attempts = [
+    url,
+    'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+    'https://corsproxy.io/?url=' + encodeURIComponent(url)
+  ];
+  let lastError = null;
+  for(const attemptUrl of attempts){
+    try{
+      const res = await fetch(attemptUrl);
+      if(!res.ok){ lastError = new Error('HTTP ' + res.status); continue; }
+      return await res.json();
+    }catch(e){
+      lastError = e;
+    }
+  }
+  throw lastError || new Error('Échec réseau');
+}
+
+function resultLabel(code){
+  if(code === 'win') return {label:'Victoire', cls:'win'};
+  if(['checkmated','resigned','timeout','abandoned','lose'].includes(code)) return {label:'Défaite', cls:'loss'};
+  return {label:'Nulle', cls:'draw'};
+}
+
+function renderGamesList(games, username){
+  fetchedGames = games;
+  const el = document.getElementById('games-list');
+  const uLower = username.toLowerCase();
+  el.innerHTML = games.map((g, idx) => {
+    const isWhite = (g.white && g.white.username && g.white.username.toLowerCase() === uLower);
+    const opponent = isWhite ? (g.black ? g.black.username : '?') : (g.white ? g.white.username : '?');
+    const resCode = isWhite ? (g.white ? g.white.result : '') : (g.black ? g.black.result : '');
+    const r = resultLabel(resCode);
+    const date = g.end_time ? new Date(g.end_time * 1000).toLocaleDateString('fr-FR') : '';
+    return `<div class="game-row">
+      <span class="g-date">${date}</span>
+      <span class="g-opponent">vs ${escapeHtml(opponent)}</span>
+      <span class="g-color">${isWhite ? 'Blancs' : 'Noirs'}</span>
+      <span class="g-result ${r.cls}">${r.label}</span>
+      <button class="btn secondary g-analyze" data-idx="${idx}">Analyser</button>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('.g-analyze').forEach(btn=>{
+    btn.onclick = () => {
+      const g = fetchedGames[parseInt(btn.dataset.idx,10)];
+      document.getElementById('pgn-input').value = g.pgn;
+      runAnalysis(g.pgn);
+      document.getElementById('panel-analyze').scrollIntoView({behavior:'smooth', block:'start'});
+    };
+  });
+}
+
 document.getElementById('fetch-btn').onclick = async () => {
   const user = document.getElementById('username-input').value.trim();
   const statusEl = document.getElementById('fetch-status');
+  document.getElementById('games-list').innerHTML = '';
   if(!user){ statusEl.textContent = 'Entre un pseudo.'; return; }
-  statusEl.textContent = 'Récupération en cours…';
+  statusEl.textContent = 'Recherche du profil…';
   try{
-    const archRes = await fetch(`https://api.chess.com/pub/player/${encodeURIComponent(user)}/games/archives`);
-    if(!archRes.ok) throw new Error('archives');
-    const archJson = await archRes.json();
-    if(!archJson.archives || archJson.archives.length===0) throw new Error('empty');
-    const lastUrl = archJson.archives[archJson.archives.length-1];
-    const gamesRes = await fetch(lastUrl);
-    if(!gamesRes.ok) throw new Error('games');
-    const gamesJson = await gamesRes.json();
-    if(!gamesJson.games || gamesJson.games.length===0) throw new Error('nogames');
-    const last = gamesJson.games[gamesJson.games.length-1];
-    document.getElementById('pgn-input').value = last.pgn;
-    statusEl.textContent = 'Dernière partie récupérée — clique sur "Analyser la partie".';
+    const archJson = await fetchJsonWithFallback(`https://api.chess.com/pub/player/${encodeURIComponent(user)}/games/archives`);
+    if(!archJson.archives || archJson.archives.length === 0) throw new Error("Aucune partie publique trouvée pour ce pseudo.");
+
+    let recent = [];
+    let idx = archJson.archives.length - 1;
+    while(recent.length < 10 && idx >= 0){
+      const monthData = await fetchJsonWithFallback(archJson.archives[idx]);
+      const monthGames = (monthData.games || []).slice().reverse();
+      recent = recent.concat(monthGames);
+      idx--;
+    }
+    recent = recent.slice(0, 10);
+    if(recent.length === 0) throw new Error("Aucune partie trouvée dans les archives récentes.");
+
+    renderGamesList(recent, user);
+    statusEl.textContent = `${recent.length} partie(s) récente(s) trouvée(s) — clique sur "Analyser" à côté de celle qui t'intéresse.`;
   }catch(e){
-    statusEl.textContent = "Échec de la récupération automatique (souvent bloqué par le navigateur). Copie le PGN depuis chess.com (bouton ⋯ → Télécharger le PGN) et colle-le ci-dessus.";
+    statusEl.innerHTML = `Échec de la récupération automatique (${escapeHtml(e.message || 'erreur réseau')}). ` +
+      `Solution fiable : sur chess.com, ouvre ta partie → bouton ⋯ → "Télécharger le PGN", puis colle-le dans le champ ci-dessus.`;
   }
 };
 
@@ -902,7 +1018,7 @@ let currentLine = null;
 let trainPly = 0;
 
 trainBoard = Chessboard('train-board', {
-  position:'start', draggable:true, pieceTheme: PIECE_THEME,
+  position:'start', draggable:true, pieceTheme: PIECE_THEME, showNotation:false,
   onDrop: onDropTrain,
   onSnapEnd: () => trainBoard.position(trainGame.fen())
 });
@@ -1017,6 +1133,66 @@ function setFeedback(text, kind){
   el.textContent = text;
   el.className = kind || '';
 }
+
+/* ============ THEORY BY ELO ============ */
+const THEORY = {
+  beginner: {
+    intro: "À ce niveau, la partie se joue à 90% sur les erreurs de développement et les pièces laissées en prise. Pas besoin de mémoriser de longues lignes : applique des principes simples et solides, encore et encore.",
+    cards: [
+      {title:"Les principes des 10 premiers coups", body:"Occupe le centre avec un pion (e4 ou d4), développe tes cavaliers avant tes fous, roque tôt pour mettre ton roi en sécurité, ne bouge pas deux fois la même pièce sans raison, et ne sors pas ta dame trop tôt — elle serait chassée en te faisant perdre du temps."},
+      {title:"Face à 1.e4 (tu joues les Noirs)", body:"La Sicilienne (1...c5) est un excellent choix : elle déséquilibre la partie et donne de bonnes chances de victoire même contre un joueur plus fort, car elle évite les positions symétriques ennuyeuses. Ne mémorise pas de lignes profondes : joue simplement ...Nc6, ...d6, ...Nf6 et développe normalement."},
+      {title:"Face à 1.d4 (tu joues les Blancs)", body:"1.d4 suivi de 2.c4 (le Gambit Dame) est une excellente arme : tu ne perds jamais réellement le pion c4, et la partie reste stratégiquement claire. Développe tes pièces mineures, roque, et vise à contrôler le centre."},
+      {title:"L'idée de la Sicilienne en une phrase", body:"Au lieu d'imiter Blanc au centre, Noir contre-attaque sur l'aile dame pendant que Blanc attaque souvent à l'aile roi. Retiens juste : ...d6, ...Nc6, ...Nf6, roquer, puis chercher ...b5 ou ...d5 selon la position."},
+      {title:"L'idée du Gambit Dame en une phrase", body:"Blanc propose un pion (c4), mais Noir ne peut pas le garder facilement. Que Noir le prenne (Accepté) ou le refuse (Refusé), retiens : développe cavaliers puis fous, joue e3, et roque."},
+      {title:"Pièges fréquents à ce niveau", body:"Méfie-toi du mat du berger (Qh5/Qf3 + Bc4 visant f7) — développe ton cavalier f6 tôt pour t'en protéger. Avant de jouer un coup, vérifie systématiquement si une de tes pièces est attaquée."}
+    ]
+  },
+  intermediate: {
+    intro: "Tu connais les bases ; il est temps de comprendre pourquoi certains coups sont joués, pas seulement lesquels. On commence à parler de structures de pions et de plans à moyen terme.",
+    cards: [
+      {title:"Structures de pions à connaître", body:"Une structure de pions détermine le plan à suivre : pions doublés, isolés (pion isolé de dame), majorité de pions à l'aile dame (typique de la Sicilienne après ...cxd4), chaîne de pions fermée (typique du Gambit Dame Refusé). Apprendre à lire la structure indique où jouer, même sans connaître le coup exact."},
+      {title:"Sicilienne — choisir sa variante", body:"Najdorf (...d6 puis ...a6) : la plus flexible, permet ...e5 ou ...e6 selon l'humeur, mais demande un peu de théorie contre l'Attaque Anglaise (Be3/f3/Qd2). Dragon (...g6) : fou puissant en g7, parties tactiques souvent décidées avant le 20e coup. Sveshnikov (...Nc6 puis ...e5) : très solide statistiquement, accepte une case faible en d5 contre de l'espace et du temps."},
+      {title:"Gambit Dame — refusé, accepté, slave", body:"Refusé (2...e6) : Noir reste solide mais son fou c8 reste passif — Blanc joue souvent Bg5 pour épingler le cavalier f6. Accepté (2...dxc4) : Blanc récupère toujours le pion via Nf3/e3/Bxc4, en échange d'un temps de développement. Slave (2...c6) : Noir garde son fou c8 actif avant ...e6, jugée plus solide que le Refusé classique."},
+      {title:"Plans typiques à retenir", body:"Dans les Siciliennes ouvertes, Blanc vise souvent une attaque à l'aile roi (g4-h4 dans le Dragon) pendant que Noir contre-attaque à l'aile dame (...b5-b4). Dans le Gambit Dame Refusé, Blanc peut lancer une 'minorité d'attaque' (b4-b5) pour créer une faiblesse dans le camp noir malgré son infériorité de pions à l'aile dame."},
+      {title:"Erreur typique à ce niveau", body:"Jouer les coups d'ouverture par cœur sans comprendre leur but devient dangereux dès que l'adversaire dévie de la ligne connue. Apprends l'idée derrière chaque coup, pas seulement la séquence — c'est justement l'objectif du mode Entraînement de cette appli."},
+      {title:"Utiliser l'analyse à bon escient", body:"Après une partie perdue en ouverture, regarde à quel coup l'évaluation a basculé (onglet Analyse). Si l'erreur est récurrente sur les mêmes premiers coups, c'est le signe qu'il faut retravailler cette ligne précise en mode Entraînement."}
+    ]
+  },
+  advanced: {
+    intro: "À ce niveau, la préparation d'ouverture devient un vrai outil compétitif : ordres de coups, transpositions et pièges théoriques bien identifiés font la différence face à des adversaires de force comparable.",
+    cards: [
+      {title:"Sicilienne — ordres de coups et transpositions", body:"L'ordre 2...Nc6 avant ...d6 évite certaines lignes anti-Siciliennes (comme la Rossolimo 3.Bb5), mais autorise 3.Bb5 directement. À l'inverse, 2...d6 permet de transposer vers le Najdorf, le Dragon ou le Scheveningen selon la suite, en gardant l'adversaire dans l'incertitude le plus longtemps possible."},
+      {title:"Gambit Dame — nuances de haut niveau", body:"Dans la Slave, jouer ...dxc4 avant ...Bf5 évite certaines lignes tranchantes de la Slave Contre-Attaquée. Dans le Refusé, la Variante d'Échange (3.cxd5 exd5) donne à Blanc un plan de minorité d'attaque clair, tandis que la Variante Cambridge Springs (avec ...Qa5) offre à Noir une contre-attaque active."},
+      {title:"Anti-Siciliennes à préparer (côté Noir)", body:"Beaucoup d'adversaires évitent la Sicilienne ouverte avec 2.c3 (Alapin), 2.Nc3 (Fermée) ou 3.Bb5(+) (Rossolimo/Moscou). Prépare une réponse à chacune : contre l'Alapin, ...Nf6 puis ...Nd5 reste solide ; contre la Fermée, ...Nc6 avec ...g6 fonctionne bien ; contre la Rossolimo, ...g6 ou ...Nge7 selon les goûts."},
+      {title:"Comprendre au lieu de mémoriser", body:"La vraie force à ce niveau vient de comprendre pourquoi une ligne fonctionne (structure, pièces actives, faiblesses) plutôt que de réciter des coups. Utilise le moteur pour vérifier tes idées, mais formule toujours l'explication humaine derrière chaque coup avant de le rejouer en partie."},
+      {title:"Préparation ciblée", body:"Avant une partie importante, regarde les dernières parties de ton adversaire s'il en a un profil connu, identifie ses ouvertures favorites, et prépare une réponse précise dans la ligne que tu maîtrises déjà via le mode Entraînement plutôt que d'en apprendre une nouvelle à la dernière minute."}
+    ]
+  }
+};
+
+function renderTheory(level){
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.dataset.level === level));
+  const data = THEORY[level];
+  document.getElementById('theory-intro').textContent = data.intro;
+  document.getElementById('theory-grid').innerHTML = data.cards.map(c =>
+    `<div class="theory-card"><h4>${escapeHtml(c.title)}</h4><p>${escapeHtml(c.body)}</p></div>`
+  ).join('');
+}
+document.querySelectorAll('.level-btn').forEach(btn=>{
+  btn.onclick = () => renderTheory(btn.dataset.level);
+});
+renderTheory('beginner');
+
+/* Recalculate board sizing on viewport changes (mobile rotation, resize) */
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if(analysisBoard) analysisBoard.resize();
+    if(trainBoard) trainBoard.resize();
+  }, 120);
+});
+
 </script>
 </body>
 </html>
