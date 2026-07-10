@@ -151,7 +151,8 @@
     display:flex;justify-content:space-around;align-items:center;
     font-family:'IBM Plex Mono',monospace;font-size:0.66rem;color:var(--ivory);opacity:0.8;
   }
-  #board, #train-board{ touch-action:manipulation; }
+  #board{ touch-action:manipulation; }
+  #train-board, #train-board *{ touch-action:none !important; }
 
   /* ---- square overlays (chessboard.js renders data-square on each square) ---- */
   [data-square]{position:relative;}
@@ -426,17 +427,30 @@ function switchTab(name){
   setTimeout(fitBoards, 30);
 }
 
-/* ============ Responsive board sizing (JS-driven, robust on mobile) ============ */
+/* ============ Responsive board sizing (mesure réelle du DOM, fiable sur mobile) ============ */
+function fitOneBoard(boardId, panelId){
+  const boardEl = document.getElementById(boardId);
+  const frameEl = boardEl ? boardEl.closest('.board-frame') : null;
+  const panelEl = document.getElementById(panelId);
+  if(!boardEl || !frameEl || !panelEl) return;
+  const panelStyle = getComputedStyle(panelEl);
+  const framePad = getComputedStyle(frameEl);
+  const panelInner = panelEl.clientWidth
+    - (parseFloat(panelStyle.paddingLeft)||0) - (parseFloat(panelStyle.paddingRight)||0);
+  const frameInner = panelInner
+    - (parseFloat(framePad.paddingLeft)||0) - (parseFloat(framePad.paddingRight)||0);
+  const px = Math.max(200, Math.min(460, frameInner - 6));
+  boardEl.style.width = px + 'px';
+}
 function fitBoards(){
-  const px = Math.max(220, Math.min(460, window.innerWidth - 64));
-  const boardEl = document.getElementById('board');
-  const trainEl = document.getElementById('train-board');
-  if(boardEl){ boardEl.style.width = px + 'px'; if(window.analysisBoard) window.analysisBoard.resize(); }
-  if(trainEl){ trainEl.style.width = px + 'px'; if(window.trainBoard) window.trainBoard.resize(); }
+  fitOneBoard('board', 'panel-analyze');
+  fitOneBoard('train-board', 'panel-train');
+  if(window.analysisBoard) window.analysisBoard.resize();
+  if(window.trainBoard) window.trainBoard.resize();
 }
 let fitTimer = null;
 window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitBoards, 120); });
-window.addEventListener('orientationchange', () => setTimeout(fitBoards, 250));
+window.addEventListener('orientationchange', () => { setTimeout(fitBoards, 250); setTimeout(fitBoards, 600); });
 
 /* ============ ENGINE : Stockfish (WASM) avec repli maison ============ */
 const STOCKFISH_URL = 'https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js';
@@ -1262,6 +1276,8 @@ renderCoords('train-ranks', 'train-files', 'white');
 $('#train-board').on('click', '[data-square]', function(){
   trainSquareClick(this.getAttribute('data-square'));
 });
+/* Sécurité supplémentaire : empêche le navigateur de scroller la page pendant un glisser sur l'échiquier */
+document.getElementById('train-board').addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
 
 function clearSelection(){
   $('#train-board [data-square]').removeClass('selected-square');
