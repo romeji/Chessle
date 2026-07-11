@@ -24,7 +24,7 @@
     --inaccuracy:#C9A227;
     --mistake:#D08A3E;
     --blunder:#C15150;
-    --radius:10px;
+    --radius:14px;
     --shadow:0 10px 28px rgba(0,0,0,0.35);
   }
   *{box-sizing:border-box;}
@@ -37,40 +37,55 @@
     font-family:'Inter',sans-serif;
     min-height:100vh;
   }
-  .app{max-width:1180px;margin:0 auto;padding:0 18px 60px;}
+  .app{max-width:1180px;margin:0 auto;padding:0 16px calc(92px + env(safe-area-inset-bottom, 0px));}
 
   header.top{
     position:sticky;top:0;z-index:20;
-    display:flex;flex-direction:column;gap:2px;
-    padding:18px 0 0;margin-bottom:20px;
-    background:linear-gradient(var(--bg) 78%, transparent);
-    backdrop-filter:blur(6px);
+    display:flex;align-items:center;
+    padding:16px 0;
+    background:linear-gradient(var(--bg) 80%, transparent);
+    backdrop-filter:blur(8px);
   }
   .brand{display:flex;align-items:center;gap:10px;}
   .brand .knight-mark{
-    width:34px;height:34px;border-radius:8px;flex:0 0 auto;
+    width:36px;height:36px;border-radius:11px;flex:0 0 auto;
     background:linear-gradient(160deg,#4A2E1B,#8B5E3C 55%,#5E3A20);
     display:flex;align-items:center;justify-content:center;
-    font-size:1.25rem;box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    font-size:1.3rem;box-shadow:0 4px 12px rgba(0,0,0,0.45);
   }
   header.top h1{
-    font-family:'Lora',serif;font-weight:700;font-size:1.7rem;margin:0;
+    font-family:'Lora',serif;font-weight:700;font-size:1.5rem;margin:0;
     letter-spacing:0.2px;color:var(--ivory);
   }
   header.top h1 .accent{color:var(--brass);}
-  header.top p.tagline{margin:2px 0 0 44px;color:var(--text-dim);font-size:0.9rem;}
 
-  nav.tabs{display:flex;gap:6px;margin-top:16px;overflow-x:auto;scrollbar-width:none;}
-  nav.tabs::-webkit-scrollbar{display:none;}
-  nav.tabs button{
-    font-family:'Lora',serif;font-weight:600;font-size:0.88rem;white-space:nowrap;
-    background:transparent;border:1px solid var(--line);color:var(--text-dim);
-    padding:9px 16px;border-radius:8px 8px 0 0;cursor:pointer;transition:all .15s ease;
+  /* ---- Native-style bottom tab bar ---- */
+  nav.tabbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    display:flex;justify-content:space-around;align-items:stretch;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    background:rgba(20,32,26,0.86);
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    border-top:1px solid var(--line);
+    box-shadow:0 -8px 24px rgba(0,0,0,0.35);
   }
-  nav.tabs button.active{background:var(--bg-panel);color:var(--ivory);border-color:var(--brass);border-bottom-color:var(--bg-panel);}
-  nav.tabs button:hover:not(.active){color:var(--ivory);}
+  .tabbar-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    background:transparent;border:none;color:var(--text-dim);cursor:pointer;
+    padding:7px 2px 5px;border-radius:14px;
+    transition:color .2s ease, transform .15s cubic-bezier(.34,1.56,.64,1), background .2s ease;
+  }
+  .tabbar-item .tabicon{
+    width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .tabbar-item span{font-size:0.66rem;font-weight:600;letter-spacing:0.01em;}
+  .tabbar-item.active{color:var(--brass); background:rgba(201,162,39,0.12);}
+  .tabbar-item.active .tabicon{transform:scale(1.12) translateY(-1px);}
+  .tabbar-item:active{transform:scale(0.92);}
 
-  section.panel{display:none;background:var(--bg-panel);border:1px solid var(--line);border-radius:0 12px 12px 12px;padding:22px;box-shadow:var(--shadow);}
+  section.panel{display:none;background:var(--bg-panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);}
   section.panel.active{display:block;}
 
   /* ---- ANALYSIS PANEL ---- */
@@ -91,16 +106,17 @@
   }
   input#username-input:focus{outline:none;border-color:var(--brass);}
   button.btn{
-    font-family:'Inter',sans-serif;font-weight:600;font-size:0.86rem;
-    background:var(--brass);color:var(--ink);border:none;border-radius:var(--radius);
-    padding:10px 16px;cursor:pointer;transition:filter .15s ease, transform .1s ease;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:0.86rem;
+    background:var(--brass);color:var(--ink);border:none;border-radius:999px;
+    padding:12px 22px;cursor:pointer;transition:filter .15s ease, transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .15s ease;
+    box-shadow:0 4px 14px rgba(201,162,39,0.28);
   }
-  button.btn:hover{filter:brightness(1.1);}
-  button.btn:active{transform:scale(0.97);}
-  button.btn.secondary{background:transparent;color:var(--ivory);border:1px solid var(--line);}
+  button.btn:hover{filter:brightness(1.08); box-shadow:0 6px 18px rgba(201,162,39,0.38);}
+  button.btn:active{transform:scale(0.95);}
+  button.btn.secondary{background:var(--bg-panel-2);color:var(--ivory);border:1px solid var(--line);box-shadow:none;border-radius:999px;}
   button.btn.secondary:hover{border-color:var(--brass);}
   button.btn.secondary.active{border-color:var(--good);color:var(--good);}
-  button.btn:disabled{opacity:0.5;cursor:not-allowed;}
+  button.btn:disabled{opacity:0.5;cursor:not-allowed;box-shadow:none;}
   #fetch-status{font-size:0.8rem;color:var(--text-dim);min-height:1.2em;line-height:1.5;}
   #analyze-btn{align-self:flex-start;margin-top:2px;}
 
@@ -284,13 +300,17 @@
   .train-info .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
 
   /* ---- THEORY PANEL ---- */
-  .level-picker{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-  .level-btn{
-    font-family:'Lora',serif;font-weight:600;font-size:0.88rem;background:var(--bg-panel-2);color:var(--text);
-    border:1px solid var(--line);border-radius:var(--radius);padding:9px 16px;cursor:pointer;transition:border-color .15s ease;
+  .level-picker{
+    display:flex;gap:2px;margin-bottom:20px;background:var(--ink);border:1px solid var(--line);
+    border-radius:999px;padding:3px;max-width:fit-content;
   }
-  .level-btn:hover{border-color:var(--brass);}
-  .level-btn.active{border-color:var(--brass);background:rgba(201,162,39,0.12);color:var(--ivory);}
+  .level-btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:0.82rem;background:transparent;color:var(--text-dim);
+    border:none;border-radius:999px;padding:8px 15px;cursor:pointer;white-space:nowrap;
+    transition:background .2s cubic-bezier(.34,1.56,.64,1), color .2s ease;
+  }
+  .level-btn:hover{color:var(--text);}
+  .level-btn.active{background:var(--brass);color:var(--ink);box-shadow:0 2px 8px rgba(201,162,39,0.35);}
   .theory-intro{font-size:0.88rem;color:var(--text-dim);line-height:1.55;margin-bottom:20px;max-width:760px;}
   .theory-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px;}
   .theory-card{background:var(--bg-panel-2);border:1px solid var(--line);border-radius:var(--radius);padding:15px 17px;}
@@ -348,10 +368,7 @@
   .history-empty{color:var(--text-dim);font-size:0.85rem;padding:10px 0;}
 
   .settings-row{display:flex;flex-direction:column;gap:8px;max-width:420px;}
-  .settings-row select{
-    background:var(--ink);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);
-    padding:10px 12px;font-size:0.85rem;
-  }
+  .setting-hint{margin:0;font-size:0.78rem;color:var(--text-dim);}
 
   /* ---- PUZZLE MODULE ---- */
   .puzzle-top-row{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch;margin-bottom:16px;}
@@ -369,7 +386,10 @@
   .puzzle-top-row .stat-card{min-width:110px;padding:12px 10px;}
   .puzzle-top-row .stat-card .big{font-size:1.5rem;}
 
-  .puzzle-source-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .puzzle-source-row{
+    display:flex;gap:2px;margin-bottom:16px;background:var(--ink);border:1px solid var(--line);
+    border-radius:999px;padding:3px;max-width:fit-content;flex-wrap:wrap;
+  }
   #mistakes-count-badge{
     display:inline-block;background:var(--blunder);color:#fff;border-radius:10px;
     padding:1px 7px;font-size:0.68rem;margin-left:4px;font-weight:700;
@@ -416,24 +436,77 @@
   .hidden{display:none !important;}
   ::-webkit-scrollbar{width:8px;}
   ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+
+  /* ---- LUDIQUE : toasts, transitions, micro-interactions ---- */
+  #toast-container{
+    position:fixed;top:16px;right:16px;z-index:200;display:flex;flex-direction:column;gap:10px;
+    pointer-events:none;max-width:min(340px, 90vw);
+  }
+  .toast{
+    background:linear-gradient(160deg,#4A2E1B 0%, #8B5E3C 55%, #5E3A20 100%);
+    border-radius:12px;padding:14px 18px;box-shadow:0 14px 32px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.08);
+    color:var(--ivory);animation:toastIn .35s cubic-bezier(.34,1.56,.64,1) forwards;
+    display:flex;flex-direction:column;gap:2px;
+  }
+  .toast.leaving{animation:toastOut .3s ease forwards;}
+  .toast .toast-title{font-family:'Lora',serif;font-weight:700;font-size:0.92rem;}
+  .toast .toast-desc{font-size:0.78rem;color:var(--ivory);opacity:0.85;}
+  @keyframes toastIn{ from{transform:translateX(120%); opacity:0;} to{transform:translateX(0); opacity:1;} }
+  @keyframes toastOut{ from{transform:translateX(0); opacity:1;} to{transform:translateX(120%); opacity:0;} }
+
+  section.panel.active{animation:panelFadeIn .32s ease;}
+  @keyframes panelFadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  button.btn, .line-btn, .theme-chip, .lib-chip, .level-btn, .tts-btn, .mastery-chip, .game-row button{
+    transition:transform .1s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  button.btn:active, .line-btn:active, .theme-chip:active, .lib-chip:active, .level-btn:active, .mastery-chip:active{
+    transform:scale(0.96);
+  }
+  .stat-card, .theory-card, .badge-chip, .game-row, .summary-card{
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .stat-card:hover, .theory-card:hover, .badge-chip.unlocked:hover, .mastery-chip:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 22px rgba(0,0,0,0.28);
+  }
+  .stat-card .big{ transition: color .2s ease; }
+  .badge-chip.unlocked{animation:badgePop .4s ease;}
+  @keyframes badgePop{ 0%{transform:scale(0.85); opacity:0.4;} 60%{transform:scale(1.06);} 100%{transform:scale(1); opacity:1;} }
 </style>
 </head>
 <body>
 <div class="app">
+  <div id="toast-container"></div>
   <header class="top">
     <div class="brand">
       <div class="knight-mark">♞</div>
       <h1>Coach d'<span class="accent">Échecs</span></h1>
     </div>
-    <p class="tagline">Analyse tes parties chess.com, entraîne-toi sur 20+ ouvertures, progresse à ton niveau.</p>
-    <nav class="tabs">
-      <button id="tab-analyze" class="active">Analyse de partie</button>
-      <button id="tab-train">Entraînement d'ouvertures</button>
-      <button id="tab-puzzles">Puzzles tactiques</button>
-      <button id="tab-theory">Théorie par niveau</button>
-      <button id="tab-progress">Progression</button>
-    </nav>
   </header>
+
+  <nav class="tabbar" id="tabbar">
+    <button id="tab-analyze" class="tabbar-item active" data-tab="analyze">
+      <svg viewBox="0 0 24 24" class="tabicon"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
+      <span>Analyse</span>
+    </button>
+    <button id="tab-train" class="tabbar-item" data-tab="train">
+      <svg viewBox="0 0 24 24" class="tabicon"><path d="M4 19V6a2 2 0 0 1 2-2h13v14H6a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h13"/><path d="M8 8h7M8 12h5"/></svg>
+      <span>Entraîner</span>
+    </button>
+    <button id="tab-puzzles" class="tabbar-item" data-tab="puzzles">
+      <svg viewBox="0 0 24 24" class="tabicon"><path d="M14 3v3a2 2 0 0 0 2 2h3M9 21H6a2 2 0 0 1-2-2v-3M4 9V6a2 2 0 0 1 2-2h3m7 17h3a2 2 0 0 0 2-2v-3"/><circle cx="12" cy="12" r="2.5"/></svg>
+      <span>Puzzles</span>
+    </button>
+    <button id="tab-theory" class="tabbar-item" data-tab="theory">
+      <svg viewBox="0 0 24 24" class="tabicon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+      <span>Théorie</span>
+    </button>
+    <button id="tab-progress" class="tabbar-item" data-tab="progress">
+      <svg viewBox="0 0 24 24" class="tabicon"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+      <span>Progrès</span>
+    </button>
+  </nav>
 
   <!-- ================= ANALYSIS PANEL ================= -->
   <section id="panel-analyze" class="panel active">
@@ -556,12 +629,13 @@
 
     <h2 class="section-title">Réglages</h2>
     <div class="settings-row">
-      <label class="field-label" for="engine-speed-select">Vitesse du moteur d'analyse</label>
-      <select id="engine-speed-select">
-        <option value="fast">Rapide (~0,25 s / coup — analyse plus rapide, un peu moins précise)</option>
-        <option value="normal">Normal (~0,45 s / coup — recommandé)</option>
-        <option value="deep">Approfondi (~0,9 s / coup — plus précis, plus lent)</option>
-      </select>
+      <label class="field-label">Vitesse du moteur d'analyse</label>
+      <div class="level-picker" id="engine-speed-picker">
+        <button class="level-btn" data-speed="fast">Rapide</button>
+        <button class="level-btn active" data-speed="normal">Normal</button>
+        <button class="level-btn" data-speed="deep">Approfondi</button>
+      </div>
+      <p class="setting-hint" id="engine-speed-hint">~0,45 s par coup — bon équilibre vitesse/précision.</p>
     </div>
     <button class="btn secondary" id="reset-progress-btn" style="margin-top:18px;">🗑 Réinitialiser ma progression</button>
   </section>
@@ -614,6 +688,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.4/confetti.min.js"></script>
 <script>
 const PIECE_THEME = 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
 
@@ -1203,6 +1278,7 @@ function recordAnalyzedGame(headers, sums){
   });
   PROGRESS.games = PROGRESS.games.slice(0, 15);
   saveProgress();
+  if(typeof checkNewBadges === 'function') checkNewBadges();
 }
 
 function recordMistakesFromAnalysis(headers){
@@ -1231,8 +1307,14 @@ function recordLineCompletion(key, clean){
   if(clean){
     const prevCount = PROGRESS.mastered[key] ? PROGRESS.mastered[key].cleanCount : 0;
     PROGRESS.mastered[key] = { cleanCount: prevCount + 1, lastDate: new Date().toISOString() };
+    if(prevCount === 0){
+      const openingName = (typeof OPENINGS !== 'undefined' && OPENINGS[key]) ? OPENINGS[key].name : 'cette ouverture';
+      fireConfetti('mastery');
+      showToast('⭐ Ouverture maîtrisée !', openingName);
+    }
   }
   saveProgress();
+  if(typeof checkNewBadges === 'function') checkNewBadges();
   if(typeof renderOpeningGroups === 'function') renderOpeningGroups();
   if(document.getElementById('panel-progress').classList.contains('active')) renderProgressTab();
 }
@@ -1251,8 +1333,66 @@ function computeBadges(){
     {emoji:'🥈', name:'Étudiant assidu', desc:'Maîtriser 10 ouvertures sans erreur', unlocked: masteredCount >= 10},
     {emoji:'🥇', name:'Maître des ouvertures', desc:`Maîtriser les ${totalTrainable} ouvertures`, unlocked: masteredCount >= totalTrainable},
     {emoji:'📊', name:'Analyste', desc:'Analyser 5 parties', unlocked: gamesCount >= 5},
-    {emoji:'🎯', name:'Sans-faute', desc:'Analyser une partie sans aucune gaffe', unlocked: perfectGame}
+    {emoji:'🎯', name:'Sans-faute', desc:'Analyser une partie sans aucune gaffe', unlocked: perfectGame},
+    {emoji:'🧩', name:'Tacticien', desc:'Résoudre 10 puzzles', unlocked: PROGRESS.puzzlesSolved >= 10},
+    {emoji:'🔥', name:'En feu', desc:'Une série de 5 puzzles résolus d\u2019affilée', unlocked: PROGRESS.puzzleBestStreak >= 5}
   ];
+}
+
+/* ============ CÉLÉBRATIONS : confetti + notifications ============ */
+function fireConfetti(kind){
+  if(typeof confetti !== 'function') return;
+  try{
+    if(kind === 'puzzle'){
+      confetti({particleCount:55, spread:55, startVelocity:32, origin:{y:0.65}, colors:['#C9A227','#5C9A6B','#EDE6D6']});
+    } else if(kind === 'mastery'){
+      confetti({particleCount:90, spread:75, startVelocity:38, origin:{y:0.6}, colors:['#C9A227','#4C8CA3','#5C9A6B']});
+      setTimeout(()=> confetti({particleCount:50, spread:100, startVelocity:30, origin:{y:0.45}}), 200);
+    } else if(kind === 'badge'){
+      confetti({particleCount:140, spread:110, startVelocity:45, origin:{y:0.5}, colors:['#C9A227','#EDE6D6','#5C9A6B','#4C8CA3']});
+    }
+  }catch(e){}
+}
+
+function showToast(title, desc){
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<span class="toast-title">${escapeHtml(title)}</span>${desc ? `<span class="toast-desc">${escapeHtml(desc)}</span>` : ''}`;
+  container.appendChild(el);
+  setTimeout(()=>{
+    el.classList.add('leaving');
+    setTimeout(()=> el.remove(), 320);
+  }, 4200);
+}
+
+function checkNewBadges(){
+  const badges = computeBadges();
+  PROGRESS.unlockedBadges = PROGRESS.unlockedBadges || [];
+  let foundNew = false;
+  badges.forEach(b => {
+    if(b.unlocked && !PROGRESS.unlockedBadges.includes(b.name)){
+      PROGRESS.unlockedBadges.push(b.name);
+      showToast(`${b.emoji} Nouveau badge : ${b.name}`, b.desc);
+      fireConfetti('badge');
+      foundNew = true;
+    }
+  });
+  if(foundNew) saveProgress();
+}
+
+function animateNumber(el, from, to, duration){
+  if(!el) return;
+  const start = performance.now();
+  const diff = to - from;
+  function step(now){
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(from + diff * eased);
+    if(t < 1) requestAnimationFrame(step);
+    else el.textContent = to;
+  }
+  requestAnimationFrame(step);
 }
 
 function renderProgressTab(){
@@ -1313,14 +1453,26 @@ function renderProgressTab(){
     }).join('');
   }
 
-  document.getElementById('engine-speed-select').value = PROGRESS.settings.engineSpeed;
+  document.querySelectorAll('#engine-speed-picker .level-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.speed === PROGRESS.settings.engineSpeed);
+  });
 }
 
-document.getElementById('engine-speed-select').onchange = function(){
-  PROGRESS.settings.engineSpeed = this.value;
-  SF_MOVETIME_MS = ENGINE_SPEEDS[this.value] || 450;
-  saveProgress();
+const ENGINE_SPEED_HINTS = {
+  fast:"~0,25 s par coup — analyse plus rapide, un peu moins précise.",
+  normal:"~0,45 s par coup — bon équilibre vitesse/précision.",
+  deep:"~0,9 s par coup — plus précis, plus lent."
 };
+document.querySelectorAll('#engine-speed-picker .level-btn').forEach(btn=>{
+  btn.onclick = function(){
+    document.querySelectorAll('#engine-speed-picker .level-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    PROGRESS.settings.engineSpeed = this.dataset.speed;
+    SF_MOVETIME_MS = ENGINE_SPEEDS[this.dataset.speed] || 450;
+    document.getElementById('engine-speed-hint').textContent = ENGINE_SPEED_HINTS[this.dataset.speed] || '';
+    saveProgress();
+  };
+});
 
 document.getElementById('reset-progress-btn').onclick = function(){
   if(!confirm('Réinitialiser toute ta progression (ouvertures maîtrisées, historique des parties) ? Cette action est irréversible.')) return;
@@ -2006,6 +2158,41 @@ const CLASSIC_PUZZLES = [
     id:'pin', setupMoves:null, fen:'4k3/3n4/8/8/Q7/8/8/3R3K w - - 0 1',
     solution:'Rxd7', theme:'Clouage', rating:700,
     explanation:"Le cavalier est cloué contre le roi par la dame sur la diagonale a4-e8. La tour le capture gratuitement, et le roi ne peut pas reprendre sans se placer lui-même en échec."
+  },
+  {
+    id:'free-piece', setupMoves:null, fen:'6k1/8/8/q7/8/2B5/8/K7 w - - 0 1',
+    solution:'Bxa5', theme:'Pièce gratuite', rating:380,
+    explanation:"La dame noire n'est protégée par rien. Il suffit de la capturer !"
+  },
+  {
+    id:'rook-double', setupMoves:null, fen:'7k/8/8/b3n3/8/8/8/K1R5 w - - 0 1',
+    solution:'Rc5', theme:'Fourchette', rating:580,
+    explanation:"La tour arrive sur c5 et attaque simultanément le fou a5 et le cavalier e5 le long de la 5ᵉ rangée : aucune des deux pièces ne peut être sauvée en une fois."
+  },
+  {
+    id:'pawn-fork', setupMoves:null, fen:'6k1/8/8/2n1b3/8/3P4/8/K7 w - - 0 1',
+    solution:'d4', theme:'Fourchette', rating:520,
+    explanation:"En avançant d'une case, le pion attaque à la fois le cavalier c5 et le fou e5. Les deux pièces ne peuvent pas se sauver ensemble : Blanc en gagnera une au coup suivant."
+  },
+  {
+    id:'deflection', setupMoves:null, fen:'3q3k/2Q3pp/8/8/8/8/8/K7 w - - 0 1',
+    solution:'Qxd8#', theme:'Déviation', rating:700,
+    explanation:"La dame blanche capture la dame noire, qui n'était pas défendue, tout en délivrant échec et mat : le roi noir, encerclé par ses propres pions, ne peut ni fuir ni bloquer."
+  },
+  {
+    id:'discovered-check', setupMoves:null, fen:'4k3/8/2n5/8/4B3/8/8/4R2K w - - 0 1',
+    solution:'Bxc6+', theme:'Attaque à la découverte', rating:720,
+    explanation:"En capturant le cavalier, le fou dévoile l'attaque de la tour sur la colonne e tout en donnant lui-même échec depuis c6 : un double échec ! Le roi noir doit obligatoirement bouger, et Blanc a gagné une pièce gratuitement."
+  },
+  {
+    id:'promotion-mate', setupMoves:null, fen:'k7/1P6/2K5/8/8/8/8/8 w - - 0 1',
+    solution:'b8=Q#', theme:'Mat par promotion', rating:500,
+    explanation:"Le pion se change en dame en arrivant sur la 8ᵉ rangée. Le roi noir n'a aucune case libre : a7 est couvert par la nouvelle dame, b7 par le roi blanc, et b8 est occupé."
+  },
+  {
+    id:'king-rook-corner', setupMoves:null, fen:'7k/8/6K1/8/8/8/8/R7 w - - 0 1',
+    solution:'Ra8#', theme:'Mats de base', rating:550,
+    explanation:"Le roi blanc, très proche, contrôle déjà g7 et h7. La tour vient délivrer l'échec sur la 8ᵉ rangée, couvrant aussi g8 au passage : aucune case de fuite pour le roi noir."
   }
 ];
 
@@ -2158,7 +2345,7 @@ function applyPuzzleRatingChange(success){
   const deltaEl = document.getElementById('puzzle-rating-delta');
   deltaEl.textContent = delta >= 0 ? `+${delta}` : `${delta}`;
   deltaEl.className = 'pr-delta ' + (delta >= 0 ? 'up' : 'down');
-  document.getElementById('puzzle-rating-value').textContent = PROGRESS.puzzleRating;
+  animateNumber(document.getElementById('puzzle-rating-value'), userRating, PROGRESS.puzzleRating, 550);
   setTimeout(() => { deltaEl.textContent = ''; }, 2500);
 }
 
@@ -2223,6 +2410,8 @@ function attemptPuzzleMove(source, target){
   applyPuzzleRatingChange(success);
   saveProgress();
   refreshPuzzleHeader();
+  if(typeof checkNewBadges === 'function') checkNewBadges();
+  if(success) fireConfetti('puzzle');
 
   setPuzzleFeedback(`${success ? 'Bravo, du premier coup !' : 'Résolu !'} ${p.explanation || (solutionClean + ' était le coup gagnant.')}`, 'good');
 
