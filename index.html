@@ -82,25 +82,27 @@
   nav.tabbar{
     position:fixed;left:0;right:0;bottom:0;z-index:50;
     display:flex;justify-content:space-around;align-items:stretch;
-    padding:8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
     background:rgba(255,251,247,0.88);
     backdrop-filter:blur(18px) saturate(160%);
     -webkit-backdrop-filter:blur(18px) saturate(160%);
     border-top:1px solid var(--line);
     box-shadow:0 -8px 24px rgba(43,47,76,0.08);
+    overflow-x:auto;scrollbar-width:none;
   }
+  nav.tabbar::-webkit-scrollbar{display:none;}
   .tabbar-item{
-    position:relative;
-    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    position:relative;flex:1 1 0;min-width:52px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     background:transparent;border:none;color:var(--text-dim);cursor:pointer;
-    padding:7px 2px 5px;border-radius:14px;
+    padding:7px 1px 5px;border-radius:14px;
     transition:color .2s ease, transform .15s cubic-bezier(.34,1.56,.64,1), background .2s ease;
   }
   .tabbar-item .tabicon{
-    width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;
+    width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;
     stroke-linecap:round;stroke-linejoin:round;transition:transform .2s cubic-bezier(.34,1.56,.64,1);
   }
-  .tabbar-item span{font-size:0.66rem;font-weight:600;letter-spacing:0.01em;}
+  .tabbar-item span{font-size:0.6rem;font-weight:600;letter-spacing:0.01em;white-space:nowrap;}
   .tabbar-item.active{color:var(--coral); background:rgba(242,129,99,0.12);}
   .tabbar-item.active .tabicon{transform:scale(1.12) translateY(-1px);}
   .tabbar-item:active{transform:scale(0.92);}
@@ -315,14 +317,14 @@
   #train-feedback.bad{border-color:var(--blunder);}
   #train-feedback.done{border-color:var(--best);}
 
-  ol#train-move-list{
+  ol#train-move-list, ol#play-move-list{
     list-style:none;margin:0;padding:0;background:var(--bg-panel-2);border:1px solid var(--line);
-    border-radius:var(--radius);max-height:150px;overflow-y:auto;font-family:'IBM Plex Mono',monospace;font-size:0.82rem;
+    border-radius:var(--radius);max-height:220px;overflow-y:auto;font-family:'IBM Plex Mono',monospace;font-size:0.82rem;
   }
-  ol#train-move-list li{display:grid;grid-template-columns:32px 1fr 1fr;gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);}
-  ol#train-move-list li:last-child{border-bottom:none;}
-  ol#train-move-list .num{color:var(--text-dim);}
-  ol#train-move-list .empty{color:var(--text-dim);grid-column:1/-1;padding:8px 0;}
+  ol#train-move-list li, ol#play-move-list li{display:grid;grid-template-columns:32px 1fr 1fr;gap:8px;padding:5px 12px;border-bottom:1px solid var(--line);}
+  ol#train-move-list li:last-child, ol#play-move-list li:last-child{border-bottom:none;}
+  ol#train-move-list .num, ol#play-move-list .num{color:var(--text-dim);}
+  ol#train-move-list .empty, ol#play-move-list .empty{color:var(--text-dim);grid-column:1/-1;padding:8px 0;}
   .train-info .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
 
   /* ---- THEORY PANEL ---- */
@@ -358,6 +360,36 @@
   .lib-chip:hover{border-color:var(--coral);}
 
   /* ---- PROGRESS / DASHBOARD ---- */
+  .streak-card{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+    border-radius:22px;padding:18px 22px;margin-bottom:22px;box-shadow:0 12px 26px rgba(43,47,76,0.25);
+  }
+  .streak-flame{font-size:2.4rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));}
+  .streak-info{display:flex;flex-direction:column;}
+  .streak-number{font-family:'Lora',serif;font-size:2rem;font-weight:700;color:#fff;line-height:1;}
+  .streak-label{font-size:0.76rem;color:var(--cream);opacity:0.8;}
+  .streak-calendar{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto;max-width:230px;}
+  .streak-day{width:12px;height:12px;border-radius:4px;background:rgba(255,255,255,0.15);}
+  .streak-day.active{background:var(--coral);}
+
+  .path-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+  .path-item{
+    display:flex;align-items:center;gap:12px;background:var(--bg-panel-2);border-radius:14px;
+    padding:12px 16px;cursor:pointer;transition:transform .15s ease, background .15s ease;
+  }
+  .path-item:hover{transform:translateX(3px);}
+  .path-item.done{background:var(--accent-green-bg);}
+  .path-check{
+    width:26px;height:26px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    background:var(--line);color:transparent;font-weight:700;font-size:0.85rem;transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .path-item.done .path-check{background:var(--good);color:#fff;transform:scale(1.05);}
+  .path-text{display:flex;flex-direction:column;flex:1;}
+  .path-text .path-title{font-weight:600;font-size:0.88rem;color:var(--navy);}
+  .path-text .path-desc{font-size:0.76rem;color:var(--text-dim);}
+  .path-item.done .path-text .path-title{text-decoration:line-through;opacity:0.65;}
+
   .stats-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
   .stat-card{
     flex:1;min-width:150px;background:var(--bg-panel-2);border:none;border-radius:var(--radius);
@@ -407,6 +439,10 @@
 
   .settings-row{display:flex;flex-direction:column;gap:8px;max-width:420px;}
   .setting-hint{margin:0;font-size:0.78rem;color:var(--text-dim);}
+  .voice-select{
+    background:var(--bg-panel-2);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);
+    padding:10px 12px;font-size:0.85rem;max-width:100%;
+  }
 
   /* ---- PUZZLE MODULE ---- */
   .puzzle-top-row{display:flex;flex-wrap:wrap;gap:16px;align-items:stretch;margin-bottom:16px;}
@@ -464,11 +500,11 @@
   }
 
   /* ---- opening search ---- */
-  #opening-search{
+  #opening-search, #glossary-search{
     width:100%;background:var(--bg-panel-2);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);
     padding:10px 14px;font-size:0.88rem;margin-bottom:14px;
   }
-  #opening-search:focus{outline:none;border-color:var(--coral);}
+  #opening-search:focus, #glossary-search:focus{outline:none;border-color:var(--coral);}
   .mastery-badge-inline{color:var(--good);font-weight:700;margin-left:4px;}
 
   .hidden{display:none !important;}
@@ -539,6 +575,10 @@
     <button id="tab-theory" class="tabbar-item" data-tab="theory">
       <svg viewBox="0 0 24 24" class="tabicon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
       <span>Théorie</span>
+    </button>
+    <button id="tab-play" class="tabbar-item" data-tab="play">
+      <svg viewBox="0 0 24 24" class="tabicon"><path d="M12 3v3m-3 0h6M8 9h8l-1 4H9L8 9Z"/><path d="M7 20l1.5-7h7L17 20Z"/><path d="M6 20h12"/></svg>
+      <span>Jouer</span>
     </button>
     <button id="tab-progress" class="tabbar-item" data-tab="progress">
       <svg viewBox="0 0 24 24" class="tabicon"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l4-5 3 3 5-7"/></svg>
@@ -648,10 +688,32 @@
     <h2 class="section-title">Bibliothèque de démonstrations interactives</h2>
     <p class="section-sub">Touche une ouverture : elle se lance directement sur l'échiquier d'entraînement, coup par coup, avec les explications.</p>
     <div id="theory-library"></div>
+
+    <h2 class="section-title">📖 Comment lire la notation échiquéenne</h2>
+    <p class="section-sub">La base indispensable pour suivre n'importe quelle explication d'échecs, y compris celles de cette appli.</p>
+    <div class="theory-grid" id="notation-grid"></div>
+
+    <h2 class="section-title">🔤 Lexique des échecs</h2>
+    <p class="section-sub">Les termes tactiques et stratégiques que tu croiseras dans les puzzles et les analyses.</p>
+    <input id="glossary-search" type="text" placeholder="🔍 Rechercher un terme… (ex : fourchette, zugzwang)">
+    <div class="theory-grid" id="glossary-grid"></div>
   </section>
 
   <!-- ================= PROGRESS PANEL ================= -->
   <section id="panel-progress" class="panel">
+    <div class="streak-card" id="streak-card">
+      <div class="streak-flame" id="streak-flame">🔥</div>
+      <div class="streak-info">
+        <div class="streak-number" id="streak-number">0</div>
+        <div class="streak-label">jour(s) de série</div>
+      </div>
+      <div class="streak-calendar" id="streak-calendar"></div>
+    </div>
+
+    <h2 class="section-title">Ton parcours recommandé</h2>
+    <p class="section-sub">Suis ces étapes dans l'ordre pour progresser efficacement.</p>
+    <div class="path-list" id="path-list"></div>
+
     <div class="stats-row" id="progress-stats"></div>
 
     <h2 class="section-title">Badges</h2>
@@ -675,6 +737,18 @@
       </div>
       <p class="setting-hint" id="engine-speed-hint">~0,45 s par coup — bon équilibre vitesse/précision.</p>
     </div>
+    <div class="settings-row" style="margin-top:16px;">
+      <label class="field-label">Effets sonores</label>
+      <button class="tts-btn active" id="sound-toggle" style="align-self:flex-start;">🔔 Sons activés</button>
+    </div>
+    <div class="settings-row" style="margin-top:16px;">
+      <label class="field-label">Voix de lecture</label>
+      <select id="voice-select" class="voice-select"></select>
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn secondary" id="voice-test-btn">🔊 Tester la voix</button>
+      </div>
+      <p class="setting-hint">La qualité dépend des voix françaises installées sur ton appareil — certaines sonnent bien plus naturelles que d'autres.</p>
+    </div>
     <button class="btn secondary" id="reset-progress-btn" style="margin-top:18px;">🗑 Réinitialiser ma progression</button>
   </section>
 
@@ -691,6 +765,7 @@
 
     <div class="puzzle-source-row">
       <button class="level-btn active" id="puzzle-src-classic" data-src="classic">🧩 Puzzles classiques</button>
+      <button class="level-btn" id="puzzle-src-random" data-src="random">🎲 Défi aléatoire</button>
       <button class="level-btn" id="puzzle-src-mistakes" data-src="mistakes">🔁 Mes erreurs à réviser <span id="mistakes-count-badge"></span></button>
     </div>
 
@@ -721,6 +796,53 @@
       </div>
     </div>
   </section>
+
+  <!-- ================= PLAY VS COMPUTER PANEL ================= -->
+  <section id="panel-play" class="panel">
+    <label class="field-label">Niveau de l'ordinateur</label>
+    <div class="level-picker" id="play-difficulty-picker">
+      <button class="level-btn active" data-diff="0">Débutant</button>
+      <button class="level-btn" data-diff="1">Facile</button>
+      <button class="level-btn" data-diff="2">Intermédiaire</button>
+      <button class="level-btn" data-diff="3">Avancé</button>
+      <button class="level-btn" data-diff="4">Expert</button>
+    </div>
+    <p class="setting-hint" id="play-difficulty-hint">Environ 800 Elo — parfait pour débuter.</p>
+
+    <label class="field-label" style="margin-top:14px;display:block;">Ta couleur</label>
+    <div class="level-picker" id="play-color-picker">
+      <button class="level-btn" data-color="w">Blancs</button>
+      <button class="level-btn" data-color="b">Noirs</button>
+      <button class="level-btn active" data-color="random">Aléatoire</button>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn" id="play-new-btn">♟ Nouvelle partie</button>
+      <button class="tts-btn active" id="play-advice-toggle">💡 Mode conseil</button>
+    </div>
+
+    <div class="train-row">
+      <div class="board-col">
+        <div class="board-frame">
+          <div class="coord-ranks" id="play-ranks"></div>
+          <div id="play-board"></div>
+          <div class="coord-files" id="play-files"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn secondary" id="play-undo-btn">↺ Revenir en arrière</button>
+          <button class="btn secondary" id="play-resign-btn">🏳 Abandonner</button>
+        </div>
+      </div>
+      <div class="train-info">
+        <div id="play-status" class="objective-box">
+          <span class="objective-label">♟ Statut</span>
+          <div class="intro" id="play-status-text">Choisis tes réglages puis lance une nouvelle partie.</div>
+        </div>
+        <div id="play-advice-box" class="puzzle-feedback-box hidden">Le conseil du coach apparaîtra ici après chacun de tes coups.</div>
+        <ol id="play-move-list"><li class="empty">Aucun coup joué</li></ol>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -735,22 +857,35 @@ document.getElementById('tab-analyze').onclick = () => switchTab('analyze');
 document.getElementById('tab-train').onclick = () => switchTab('train');
 document.getElementById('tab-puzzles').onclick = () => switchTab('puzzles');
 document.getElementById('tab-theory').onclick = () => switchTab('theory');
+document.getElementById('tab-play').onclick = () => switchTab('play');
 document.getElementById('tab-progress').onclick = () => switchTab('progress');
 function switchTab(name){
   document.getElementById('tab-analyze').classList.toggle('active', name==='analyze');
   document.getElementById('tab-train').classList.toggle('active', name==='train');
   document.getElementById('tab-puzzles').classList.toggle('active', name==='puzzles');
   document.getElementById('tab-theory').classList.toggle('active', name==='theory');
+  document.getElementById('tab-play').classList.toggle('active', name==='play');
   document.getElementById('tab-progress').classList.toggle('active', name==='progress');
   document.getElementById('panel-analyze').classList.toggle('active', name==='analyze');
   document.getElementById('panel-train').classList.toggle('active', name==='train');
   document.getElementById('panel-puzzles').classList.toggle('active', name==='puzzles');
   document.getElementById('panel-theory').classList.toggle('active', name==='theory');
+  document.getElementById('panel-play').classList.toggle('active', name==='play');
   document.getElementById('panel-progress').classList.toggle('active', name==='progress');
   if(name==='progress' && typeof renderProgressTab === 'function') renderProgressTab();
   if(name==='puzzles' && typeof ensurePuzzleBoard === 'function'){
     ensurePuzzleBoard();
     if(typeof refreshPuzzleHeader === 'function') refreshPuzzleHeader();
+  }
+  if(name==='play' && typeof ensurePlayBoard === 'function'){
+    ensurePlayBoard();
+  }
+  if(name==='theory'){
+    if(typeof renderNotationGuide === 'function') renderNotationGuide();
+    if(!PROGRESS.viewedNotationGuide){
+      PROGRESS.viewedNotationGuide = true;
+      saveProgress();
+    }
   }
   setTimeout(fitBoards, 30);
 }
@@ -774,9 +909,11 @@ function fitBoards(){
   fitOneBoard('board', 'panel-analyze');
   fitOneBoard('train-board', 'panel-train');
   fitOneBoard('puzzle-board', 'panel-puzzles');
+  fitOneBoard('play-board', 'panel-play');
   if(window.analysisBoard) window.analysisBoard.resize();
   if(window.trainBoard) window.trainBoard.resize();
   if(window.puzzleBoard) window.puzzleBoard.resize();
+  if(window.playBoard) window.playBoard.resize();
 }
 let fitTimer = null;
 window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(fitBoards, 120); });
@@ -857,13 +994,20 @@ function parseUciMoveToSan(fen, uciMove){
   return mv ? mv.san : null;
 }
 
-function sfAnalyzeFEN(fen){
+function sfSetSkillLevel(level){
+  if(sfWorker && sfState === 'ready'){
+    sfWorker.postMessage('setoption name Skill Level value ' + Math.max(0, Math.min(20, level)));
+  }
+}
+
+function sfAnalyzeFEN(fen, movetimeOverride){
+  const movetime = movetimeOverride || SF_MOVETIME_MS;
   return new Promise((resolve)=>{
     let lastInfo = null;
     let stopped = false;
     const safety = setTimeout(()=>{
       if(!stopped){ stopped = true; sfWorker.postMessage('stop'); }
-    }, SF_MOVETIME_MS + 4000);
+    }, movetime + 4000);
 
     const handler = (e) => {
       const line = e.data;
@@ -903,7 +1047,7 @@ function sfAnalyzeFEN(fen){
     };
     sfWorker.addEventListener('message', handler);
     sfWorker.postMessage('position fen ' + fen);
-    sfWorker.postMessage('go movetime ' + SF_MOVETIME_MS);
+    sfWorker.postMessage('go movetime ' + movetime);
   });
 }
 
@@ -975,9 +1119,12 @@ function homemadeAnalyzeFEN(fen){
   });
 }
 
-async function engineAnalyzeFEN(fen){
+async function engineAnalyzeFEN(fen, movetimeOverride){
   await waitForEngineReady();
-  if(sfState === 'ready') return sfAnalyzeFEN(fen);
+  if(sfState === 'ready'){
+    sfSetSkillLevel(20);
+    return sfAnalyzeFEN(fen, movetimeOverride);
+  }
   return homemadeAnalyzeFEN(fen);
 }
 
@@ -1013,15 +1160,85 @@ function pieceNameFromSan(san){
   return map[san[0]] || 'pion';
 }
 
-/* ============ Lecture vocale (français) ============ */
+/* ============ Lecture vocale (français, plus naturelle) ============ */
 let ttsEnabled = true;
+
+/* -- Choix de la meilleure voix française disponible -- */
+let frenchVoice = null;
+function pickFrenchVoice(){
+  if(!('speechSynthesis' in window)) return null;
+  const voices = window.speechSynthesis.getVoices();
+  if(!voices || voices.length === 0) return null;
+  const frVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+  if(frVoices.length === 0) return null;
+  // Préférence sauvegardée par l'utilisateur, si elle existe encore parmi les voix disponibles
+  if(typeof PROGRESS !== 'undefined' && PROGRESS.settings && PROGRESS.settings.voiceName){
+    const saved = frVoices.find(v => v.name === PROGRESS.settings.voiceName);
+    if(saved) return saved;
+  }
+  // Heuristique : les voix "Enhanced"/"Premium"/"Natural" ou certaines voix nommées
+  // sonnent nettement moins robotiques que la voix "compacte" par défaut de beaucoup de navigateurs.
+  const preferredHints = ['enhanced', 'premium', 'natural', 'neural', 'google', 'amélie', 'amelie', 'audrey', 'aurélie', 'aurelie', 'thomas', 'marie', 'siri'];
+  for(const hint of preferredHints){
+    const found = frVoices.find(v => v.name.toLowerCase().includes(hint));
+    if(found) return found;
+  }
+  const local = frVoices.find(v => v.localService);
+  return local || frVoices[0];
+}
+function populateVoiceSelect(){
+  const sel = document.getElementById('voice-select');
+  if(!sel || !('speechSynthesis' in window)) return;
+  const voices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+  if(voices.length === 0){
+    sel.innerHTML = '<option>Aucune voix française détectée</option>';
+    return;
+  }
+  const currentName = frenchVoice ? frenchVoice.name : '';
+  sel.innerHTML = voices.map(v => `<option value="${escapeHtml(v.name)}" ${v.name===currentName?'selected':''}>${escapeHtml(v.name)}${v.localService?' (locale)':''}</option>`).join('');
+}
+function refreshVoiceChoice(){
+  frenchVoice = pickFrenchVoice();
+  populateVoiceSelect();
+}
+if('speechSynthesis' in window){
+  refreshVoiceChoice();
+  window.speechSynthesis.onvoiceschanged = refreshVoiceChoice;
+}
+
+/* -- Convertit la notation échiquéenne (Nd6+, Qxf7#, O-O, e8=Q…) en français parlé -- */
+const SPEECH_PIECE_NAMES = {N:'Cavalier', B:'Fou', R:'Tour', Q:'Dame', K:'Roi'};
+function sanTokenToSpeech(token){
+  if(token === 'O-O-O' || token === '0-0-0') return 'grand roque';
+  if(token === 'O-O' || token === '0-0') return 'petit roque';
+  let t = token, suffix = '';
+  if(t.endsWith('#')){ suffix = ', échec et mat'; t = t.slice(0, -1); }
+  else if(t.endsWith('+')){ suffix = ', échec'; t = t.slice(0, -1); }
+  let promotion = '';
+  const promoMatch = t.match(/=([NBRQ])$/);
+  if(promoMatch){ promotion = ' promotion ' + SPEECH_PIECE_NAMES[promoMatch[1]]; t = t.slice(0, -2); }
+  let piece = '';
+  if(/^[NBRQK]/.test(t)){ piece = SPEECH_PIECE_NAMES[t[0]] + ' '; t = t.slice(1); }
+  t = t.replace('x', ' prend ');
+  return (piece + t + promotion + suffix).trim();
+}
+function frenchifyMoveNotation(text){
+  return text.replace(/\b(O-O-O|O-O|[NBRQK]?[a-h]?[1-8]?x?[a-h][1-8](?:=[NBRQ])?[+#]?)\b/g, (match) => {
+    if(match === 'O-O-O' || match === 'O-O') return sanTokenToSpeech(match);
+    if(!/[a-h][1-8]/.test(match)) return match;
+    return sanTokenToSpeech(match);
+  });
+}
+
 function speak(text){
   if(!ttsEnabled || !('speechSynthesis' in window)) return;
   try{
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(frenchifyMoveNotation(text));
     u.lang = 'fr-FR';
-    u.rate = 1.02;
+    if(frenchVoice) u.voice = frenchVoice;
+    u.rate = 0.96;
+    u.pitch = 1.0;
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -1031,6 +1248,43 @@ document.getElementById('tts-toggle').onclick = function(){
   this.classList.toggle('active', ttsEnabled);
   if(!ttsEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
 };
+
+/* ============ Sons synthétisés (aucun fichier externe) ============ */
+let soundEnabled = true;
+let audioCtx = null;
+function ensureAudioCtx(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+  return audioCtx;
+}
+document.getElementById('sound-toggle').onclick = function(){
+  soundEnabled = !soundEnabled;
+  this.classList.toggle('active', soundEnabled);
+  this.textContent = soundEnabled ? '🔔 Sons activés' : '🔕 Sons coupés';
+};
+function playSound(type){
+  if(!soundEnabled) return;
+  const ctx = ensureAudioCtx();
+  if(!ctx) return;
+  try{
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    let freq = 520, dur = 0.08, type2 = 'sine';
+    if(type === 'move'){ freq = 520; dur = 0.07; }
+    else if(type === 'capture'){ freq = 340; dur = 0.09; }
+    else if(type === 'check'){ freq = 700; dur = 0.12; }
+    else if(type === 'gameover'){ freq = 260; dur = 0.4; }
+    osc.type = type2;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.16, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    osc.start(now); osc.stop(now + dur + 0.02);
+  }catch(e){}
+}
 
 /* ============ ANALYSIS ============ */
 let analysisBoard = null;
@@ -1278,9 +1532,10 @@ document.addEventListener('keydown', (e) => {
 const PROGRESS_KEY = 'chessCoachProgress';
 function defaultProgress(){
   return {
-    mastered:{}, attempts:{}, games:[], settings:{engineSpeed:'normal'},
+    mastered:{}, attempts:{}, games:[], settings:{engineSpeed:'normal', voiceName:null},
     mistakes: [], puzzleRating: 1000, puzzlesSolved: 0, puzzlesFailed: 0,
-    puzzleStreak: 0, puzzleBestStreak: 0
+    puzzleStreak: 0, puzzleBestStreak: 0,
+    activityDates: [], viewedNotationGuide: false, viewedGlossary: false
   };
 }
 function loadProgress(){
@@ -1296,6 +1551,54 @@ let PROGRESS = loadProgress();
 
 const ENGINE_SPEEDS = { fast:250, normal:450, deep:900 };
 SF_MOVETIME_MS = ENGINE_SPEEDS[PROGRESS.settings.engineSpeed] || 450;
+
+/* ============ SÉRIE QUOTIDIENNE (streak) ============ */
+function todayKey(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function dateKeyOffset(daysAgo){
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function recordActivity(){
+  PROGRESS.activityDates = PROGRESS.activityDates || [];
+  const key = todayKey();
+  const isNewDay = !PROGRESS.activityDates.includes(key);
+  if(isNewDay){
+    PROGRESS.activityDates.push(key);
+    PROGRESS.activityDates = PROGRESS.activityDates.slice(-400);
+    saveProgress();
+    const streak = computeCurrentStreak();
+    if(streak > 1 && streak % 1 === 0){
+      showToast(`🔥 Série de ${streak} jour${streak>1?'s':''} !`, "Reviens demain pour continuer.");
+    }
+  }
+}
+function computeCurrentStreak(){
+  const dates = new Set(PROGRESS.activityDates || []);
+  let streak = 0;
+  let offset = dates.has(todayKey()) ? 0 : 1;
+  while(dates.has(dateKeyOffset(offset))){
+    streak++;
+    offset++;
+  }
+  return streak;
+}
+function computeBestStreak(){
+  const dates = (PROGRESS.activityDates || []).slice().sort();
+  if(dates.length === 0) return 0;
+  let best = 1, cur = 1;
+  for(let i=1;i<dates.length;i++){
+    const prev = new Date(dates[i-1]);
+    const now = new Date(dates[i]);
+    const diffDays = Math.round((now - prev) / 86400000);
+    if(diffDays === 1){ cur++; } else if(diffDays > 1){ cur = 1; }
+    best = Math.max(best, cur);
+  }
+  return best;
+}
 
 function computeAccuracy(s){
   const total = s.best + s.good + s.inaccuracy + s.mistake + s.blunder;
@@ -1316,6 +1619,7 @@ function recordAnalyzedGame(headers, sums){
   });
   PROGRESS.games = PROGRESS.games.slice(0, 15);
   saveProgress();
+  recordActivity();
   if(typeof checkNewBadges === 'function') checkNewBadges();
 }
 
@@ -1352,6 +1656,7 @@ function recordLineCompletion(key, clean){
     }
   }
   saveProgress();
+  recordActivity();
   if(typeof checkNewBadges === 'function') checkNewBadges();
   if(typeof renderOpeningGroups === 'function') renderOpeningGroups();
   if(document.getElementById('panel-progress').classList.contains('active')) renderProgressTab();
@@ -1433,7 +1738,48 @@ function animateNumber(el, from, to, duration){
   requestAnimationFrame(step);
 }
 
+function renderPathList(){
+  const totalTrainable = trainableKeys().length;
+  const masteredCount = Object.keys(PROGRESS.mastered).length;
+  const steps = [
+    { title:"Découvre la notation", desc:"Comprends comment lire et écrire les coups", done: PROGRESS.viewedNotationGuide, tab:'theory' },
+    { title:"Résous ton premier puzzle", desc:"Onglet Puzzles tactiques", done: PROGRESS.puzzlesSolved >= 1, tab:'puzzles' },
+    { title:"Maîtrise une ouverture", desc:"Termine une ligne sans erreur", done: masteredCount >= 1, tab:'train' },
+    { title:"Analyse ta première partie", desc:"Colle un PGN ou récupère-en un", done: PROGRESS.games.length >= 1, tab:'analyze' },
+    { title:"Tiens une série de 3 jours", desc:"Reviens t'entraîner 3 jours de suite", done: computeCurrentStreak() >= 3, tab:null },
+    { title:"Résous 10 puzzles", desc:"Deviens un vrai tacticien", done: PROGRESS.puzzlesSolved >= 10, tab:'puzzles' },
+    { title:"Maîtrise 5 ouvertures", desc:"Construis ton répertoire", done: masteredCount >= 5, tab:'train' }
+  ];
+  const el = document.getElementById('path-list');
+  el.innerHTML = steps.map(s => `
+    <div class="path-item ${s.done ? 'done' : ''}" data-tab="${s.tab || ''}">
+      <span class="path-check">✓</span>
+      <span class="path-text"><span class="path-title">${escapeHtml(s.title)}</span><span class="path-desc">${escapeHtml(s.desc)}</span></span>
+    </div>
+  `).join('');
+  el.querySelectorAll('.path-item').forEach(item=>{
+    const tab = item.dataset.tab;
+    if(tab) item.onclick = () => switchTab(tab);
+  });
+}
+
+function renderStreakCard(){
+  const streak = computeCurrentStreak();
+  document.getElementById('streak-number').textContent = streak;
+  document.getElementById('streak-flame').style.opacity = streak > 0 ? '1' : '0.35';
+  const dates = new Set(PROGRESS.activityDates || []);
+  const cal = document.getElementById('streak-calendar');
+  let html = '';
+  for(let i=27;i>=0;i--){
+    const active = dates.has(dateKeyOffset(i));
+    html += `<span class="streak-day ${active ? 'active':''}"></span>`;
+  }
+  cal.innerHTML = html;
+}
+
 function renderProgressTab(){
+  renderStreakCard();
+  renderPathList();
   const totalTrainable = trainableKeys().length;
   const masteredCount = Object.keys(PROGRESS.mastered).length;
   const avgAcc = PROGRESS.games.length
@@ -1444,6 +1790,7 @@ function renderProgressTab(){
     <div class="stat-card"><div class="big">${masteredCount}/${totalTrainable}</div><div class="label">Ouvertures maîtrisées</div></div>
     <div class="stat-card"><div class="big">${PROGRESS.games.length}</div><div class="label">Parties analysées</div></div>
     <div class="stat-card"><div class="big">${avgAcc !== null ? avgAcc + '%' : '—'}</div><div class="label">Précision moyenne (approx.)</div></div>
+    <div class="stat-card"><div class="big">${PROGRESS.puzzlesSolved}</div><div class="label">Puzzles résolus</div></div>
   `;
 
   document.getElementById('badges-row').innerHTML = computeBadges().map(b => `
@@ -1511,6 +1858,17 @@ document.querySelectorAll('#engine-speed-picker .level-btn').forEach(btn=>{
     saveProgress();
   };
 });
+
+document.getElementById('voice-select').addEventListener('change', function(){
+  PROGRESS.settings.voiceName = this.value;
+  saveProgress();
+  refreshVoiceChoice();
+  speak("Voici comment sonne cette voix.");
+});
+document.getElementById('voice-test-btn').onclick = function(){
+  speak("Bien joué ! Cavalier d6, échec — la dame est maintenant attaquée.");
+};
+populateVoiceSelect();
 
 document.getElementById('reset-progress-btn').onclick = function(){
   if(!confirm('Réinitialiser toute ta progression (ouvertures maîtrisées, historique des parties) ? Cette action est irréversible.')) return;
@@ -2100,6 +2458,7 @@ function attemptTrainMove(source, target){
     trainGame.undo();
     lineMistakes++;
     flashSquares('#train-board', [target], 'flash-bad', 450);
+    playSound('capture');
     const phrase = pickPhrase(WRONG_MOVE_PHRASES, wrongRef).replace('{piece}', pieceNameFromSan(expected.san));
     setFeedback(phrase, 'bad');
     return false;
@@ -2108,6 +2467,7 @@ function attemptTrainMove(source, target){
   $('#train-board [data-square]').removeClass('suggest-from suggest-to');
   highlightMove('#train-board', moveObj.from, moveObj.to);
   flashSquares('#train-board', [moveObj.to], 'flash-good', 450);
+  playSound('move');
   const prefix = pickPhrase(CORRECT_MOVE_PREFIXES, goodRef);
   setFeedback(`${prefix} ${expected.san} — ${expected.c}`, 'good');
   trainPly++;
@@ -2258,8 +2618,10 @@ function buildPuzzleQueue(){
     if(puzzleThemeFilter !== 'all') list = list.filter(p => p.theme === puzzleThemeFilter);
     list.sort((a,b) => a.rating - b.rating);
     puzzleQueue = list;
-  } else {
+  } else if(puzzleSource === 'mistakes'){
     puzzleQueue = (PROGRESS.mistakes || []).slice();
+  } else if(puzzleSource === 'random'){
+    puzzleQueue = generatedPuzzle ? [generatedPuzzle] : [];
   }
 }
 
@@ -2303,6 +2665,7 @@ document.getElementById('puzzle-src-classic').onclick = () => {
   puzzleSource = 'classic';
   document.getElementById('puzzle-src-classic').classList.add('active');
   document.getElementById('puzzle-src-mistakes').classList.remove('active');
+  document.getElementById('puzzle-src-random').classList.remove('active');
   renderThemeFilters();
   buildPuzzleQueue();
   loadPuzzle(0);
@@ -2311,10 +2674,88 @@ document.getElementById('puzzle-src-mistakes').onclick = () => {
   puzzleSource = 'mistakes';
   document.getElementById('puzzle-src-mistakes').classList.add('active');
   document.getElementById('puzzle-src-classic').classList.remove('active');
+  document.getElementById('puzzle-src-random').classList.remove('active');
   renderThemeFilters();
   buildPuzzleQueue();
   loadPuzzle(0);
 };
+document.getElementById('puzzle-src-random').onclick = () => {
+  puzzleSource = 'random';
+  document.getElementById('puzzle-src-random').classList.add('active');
+  document.getElementById('puzzle-src-classic').classList.remove('active');
+  document.getElementById('puzzle-src-mistakes').classList.remove('active');
+  renderThemeFilters();
+  generateRandomPuzzle();
+};
+
+/* ---- Générateur de puzzles vérifiés par Stockfish ---- */
+let generatedPuzzle = null;
+let generatingPuzzle = false;
+
+function randomOpeningPrefix(){
+  const keys = Object.keys(OPENINGS);
+  const key = keys[Math.floor(Math.random()*keys.length)];
+  const line = OPENINGS[key];
+  const maxPly = Math.min(line.moves.length, 3 + Math.floor(Math.random()*4));
+  const g = new Chess();
+  for(let i=0;i<maxPly;i++){
+    const san = line.moves[i].san.replace(/[!?]+$/, '');
+    const mv = g.move(san);
+    if(!mv) break;
+  }
+  return g;
+}
+function playRandomContinuation(g, plies){
+  for(let i=0;i<plies;i++){
+    if(g.game_over()) break;
+    const moves = g.moves();
+    if(moves.length === 0) break;
+    const mv = moves[Math.floor(Math.random()*moves.length)];
+    g.move(mv);
+  }
+  return g;
+}
+
+async function generateRandomPuzzle(){
+  if(generatingPuzzle) return;
+  generatingPuzzle = true;
+  document.getElementById('puzzle-title').textContent = "🎲 Génération d'un défi…";
+  setPuzzleFeedback("Stockfish analyse une nouvelle position pour te trouver un défi intéressant…", 'prompt');
+  document.getElementById('puzzle-dots').innerHTML = '';
+  document.getElementById('puzzle-stars').innerHTML = '';
+
+  await waitForEngineReady();
+  sfSetSkillLevel(20);
+  let best = null;
+  for(let attempt=0; attempt<5; attempt++){
+    const g = randomOpeningPrefix();
+    playRandomContinuation(g, 2 + Math.floor(Math.random()*5));
+    if(g.game_over()) continue;
+    const fen = g.fen();
+    let result;
+    try{ result = await engineAnalyzeFEN(fen, 600); } catch(e){ continue; }
+    if(!result || !result.bestMoveSan) continue;
+    const scoreAbs = Math.min(900, Math.abs(result.scoreForMover));
+    const candidate = { fen, solution: result.bestMoveSan, scoreAbs, mate: result.mate };
+    if(!best || scoreAbs > best.scoreAbs) best = candidate;
+    if(scoreAbs > 220 || result.mate) break;
+  }
+  generatingPuzzle = false;
+
+  if(!best){
+    setPuzzleFeedback("Impossible de générer un défi cette fois — réessaie.", 'bad');
+    return;
+  }
+  generatedPuzzle = {
+    fen: best.fen,
+    solution: best.solution,
+    theme: best.mate ? 'Mat forcé (généré par Stockfish)' : 'Meilleur coup (généré par Stockfish)',
+    rating: best.mate ? 900 : Math.min(900, 480 + Math.round(best.scoreAbs / 3)),
+    explanation: `Position générée aléatoirement et vérifiée par Stockfish : ${best.solution} est objectivement le coup le plus fort ici.`
+  };
+  buildPuzzleQueue();
+  loadPuzzle(0);
+}
 
 function refreshPuzzleHeader(){
   document.getElementById('puzzle-rating-value').textContent = PROGRESS.puzzleRating;
@@ -2429,12 +2870,14 @@ function attemptPuzzleMove(source, target){
     puzzleGame.undo();
     puzzleHasFailed = true;
     flashSquares('#puzzle-board', [target], 'flash-bad', 450);
+    playSound('capture');
     setPuzzleFeedback("Pas le bon coup. Réessaie, ou utilise l'Indice si tu es bloqué.", 'bad');
     return false;
   }
 
   highlightMove('#puzzle-board', moveObj.from, moveObj.to);
   flashSquares('#puzzle-board', [moveObj.to], 'flash-good', 500);
+  playSound('move');
   puzzleBoard.position(puzzleGame.fen());
 
   const success = !puzzleHasFailed;
@@ -2447,6 +2890,7 @@ function attemptPuzzleMove(source, target){
   PROGRESS.puzzlesSolved++;
   applyPuzzleRatingChange(success);
   saveProgress();
+  recordActivity();
   refreshPuzzleHeader();
   if(typeof checkNewBadges === 'function') checkNewBadges();
   if(success) fireConfetti('puzzle');
@@ -2458,6 +2902,8 @@ function attemptPuzzleMove(source, target){
     saveProgress();
     buildPuzzleQueue();
     setTimeout(() => loadPuzzle(puzzleIndex), 1400);
+  } else if(puzzleSource === 'random'){
+    setTimeout(() => generateRandomPuzzle(), 1400);
   } else {
     setTimeout(() => loadPuzzle(puzzleIndex+1), 1400);
   }
@@ -2481,9 +2927,18 @@ document.getElementById('puzzle-skip-btn').onclick = () => {
   saveProgress();
   refreshPuzzleHeader();
   setPuzzleFeedback(`La solution était ${p.solution}. ${p.explanation || ''}`, 'done');
-  setTimeout(() => loadPuzzle(puzzleIndex+1), 1600);
+  if(puzzleSource === 'random'){
+    setTimeout(() => generateRandomPuzzle(), 1600);
+  } else if(puzzleSource === 'mistakes'){
+    setTimeout(() => loadPuzzle(puzzleIndex), 1600);
+  } else {
+    setTimeout(() => loadPuzzle(puzzleIndex+1), 1600);
+  }
 };
-document.getElementById('puzzle-retry-btn').onclick = () => { if(puzzleQueue.length > 0) loadPuzzle(puzzleIndex); };
+document.getElementById('puzzle-retry-btn').onclick = () => {
+  if(puzzleSource === 'random'){ generateRandomPuzzle(); return; }
+  if(puzzleQueue.length > 0) loadPuzzle(puzzleIndex);
+};
 
 function setPuzzleFeedback(text, kind){
   const el = document.getElementById('puzzle-feedback');
@@ -2570,6 +3025,62 @@ function renderLibrary(){
 }
 renderLibrary();
 
+/* ============ GUIDE DE NOTATION ============ */
+const NOTATION_ITEMS = [
+  {title:"Les cases", body:"Chaque case a une adresse unique : une lettre (colonne, a à h, de gauche à droite pour les Blancs) suivie d'un chiffre (rangée, 1 à 8). La case e4, très centrale, est repère classique."},
+  {title:"Les pièces", body:"Chaque pièce a une lettre : R pour le Roi, D pour la Dame, T pour la Tour, F pour le Fou, C pour le Cavalier. Le pion n'a pas de lettre : on écrit juste la case d'arrivée (ex : e4)."},
+  {title:"Un coup simple", body:"'Cf3' signifie : le Cavalier se déplace sur la case f3. 'e4' signifie : un pion avance sur e4. On indique toujours la pièce (sauf le pion) puis la case d'arrivée."},
+  {title:"La capture : x", body:"Le symbole x indique une capture. 'Fxe5' signifie : le Fou capture la pièce présente en e5. 'exd5' signifie : un pion de la colonne e capture sur d5."},
+  {title:"L'échec et le mat", body:"Le symbole + indique un échec (ex : Dh5+). Le symbole # indique échec et mat (ex : Qxf7#). Ce sont les deux seuls symboles ajoutés après la case d'arrivée."},
+  {title:"Le roque", body:"O-O désigne le petit roque (roque du côté roi). O-O-O désigne le grand roque (roque du côté dame)."},
+  {title:"La promotion", body:"Quand un pion atteint la dernière rangée, il se transforme. On note '=' suivi de la pièce choisie : 'e8=Q' signifie que le pion devient une Dame en arrivant sur e8."},
+  {title:"Un coup douteux ou brillant", body:"Certains ajoutent des annotations : ! pour un bon coup, !! pour un coup brillant, ? pour une erreur, ?? pour une gaffe. Ce ne sont pas des symboles officiels du jeu, juste des commentaires d'analyse — c'est ce que utilise l'onglet Analyse de cette appli."}
+];
+function renderNotationGuide(){
+  const el = document.getElementById('notation-grid');
+  if(!el || el.dataset.rendered) return;
+  el.innerHTML = NOTATION_ITEMS.map(n => `<div class="theory-card"><h4>${escapeHtml(n.title)}</h4><p>${escapeHtml(n.body)}</p></div>`).join('');
+  el.dataset.rendered = '1';
+}
+
+/* ============ LEXIQUE DES ÉCHECS ============ */
+const GLOSSARY_ITEMS = [
+  {term:"Fourchette", def:"Une pièce attaque deux pièces adverses en même temps ; l'adversaire ne peut en sauver qu'une seule."},
+  {term:"Clouage", def:"Une pièce ne peut pas bouger sans exposer une pièce plus précieuse (souvent le roi) derrière elle."},
+  {term:"Enfilade", def:"Comme un clouage mais dans l'autre sens : la pièce la plus précieuse est attaquée en premier et doit bouger, exposant une pièce moins précieuse derrière elle."},
+  {term:"Attaque à la découverte", def:"En déplaçant une pièce, on révèle l'attaque d'une autre pièce restée immobile."},
+  {term:"Zugzwang", def:"Terme allemand : une position où le seul fait de devoir jouer un coup (n'importe lequel) dégrade la position — mieux vaudrait ne rien jouer."},
+  {term:"Zwischenzug", def:"'Coup intermédiaire' : au lieu de répondre directement à une menace, on insère un coup encore plus fort avant d'y répondre."},
+  {term:"Fianchetto", def:"Développer un fou sur la deuxième case de la colonne du cavalier (b2, g2, b7 ou g7) après avoir avancé le pion devant lui."},
+  {term:"Opposition", def:"En finale, situation où les deux rois se font face avec une case vide entre eux : le roi qui n'a pas à jouer a l'avantage."},
+  {term:"Gambit", def:"Sacrifice volontaire d'un pion (parfois plus) dès l'ouverture pour obtenir en échange du développement, de l'espace ou une attaque rapide."},
+  {term:"Pion isolé", def:"Un pion qui n'a plus de pion allié sur les colonnes voisines pour le soutenir. Peut être une faiblesse (facile à attaquer) ou une force (colonnes ouvertes pour les pièces)."},
+  {term:"Pion passé", def:"Un pion qu'aucun pion adverse ne peut plus arrêter dans sa progression vers la promotion, ni de face ni en diagonale."},
+  {term:"Colonne ouverte", def:"Une colonne sans aucun pion, blanc ou noir. Idéale pour y placer une tour, qui y aura une liberté totale."},
+  {term:"Roque", def:"Coup spécial déplaçant simultanément le roi (2 cases) et une tour, pour mettre le roi en sécurité et activer la tour."},
+  {term:"Prise en passant", def:"Règle spéciale : si un pion avance de deux cases et se retrouve à côté d'un pion adverse, ce dernier peut le capturer 'en passant', comme s'il n'avait avancé que d'une case."},
+  {term:"Sacrifice", def:"Donner volontairement du matériel (une pièce ou un pion) en échange d'un avantage positionnel, tactique ou d'une attaque décisive."},
+  {term:"Mat étouffé", def:"Un mat délivré par un cavalier alors que le roi adverse est totalement bloqué par ses propres pièces, incapable de bouger."},
+  {term:"Mat du couloir (back rank)", def:"Un mat délivré sur la dernière rangée, le roi étant emprisonné par ses propres pions non avancés."},
+  {term:"Déviation", def:"Forcer une pièce adverse (souvent par un sacrifice ou une capture) à abandonner la défense d'une case ou d'une pièce importante."},
+  {term:"Surcharge", def:"Une pièce défend deux choses importantes à la fois ; en attaquant l'une, on force l'abandon de l'autre."},
+  {term:"Prophylaxie", def:"Jouer un coup qui empêche à l'avance un plan ou une ressource adverse, plutôt que de poursuivre son propre plan immédiatement."},
+  {term:"Case faible", def:"Une case qu'aucun pion ne peut plus jamais défendre, souvent idéale pour y installer un cavalier adverse en permanence (avant-poste)."},
+  {term:"Avant-poste", def:"Une case faible dans le camp adverse, généralement en territoire ennemi, où une pièce (souvent un cavalier) peut s'installer durablement à l'abri des pions."},
+  {term:"Développement", def:"Sortir ses pièces de leur case de départ pour les rendre actives, priorité essentielle des premiers coups d'une partie."},
+  {term:"Temps (tempo)", def:"Une unité de 'temps' de jeu : gagner un tempo signifie forcer l'adversaire à perdre un coup, par exemple en attaquant une pièce qu'il doit déplacer."}
+];
+function renderGlossary(filter){
+  const el = document.getElementById('glossary-grid');
+  const q = (filter || '').trim().toLowerCase();
+  const list = q ? GLOSSARY_ITEMS.filter(g => g.term.toLowerCase().includes(q) || g.def.toLowerCase().includes(q)) : GLOSSARY_ITEMS;
+  el.innerHTML = list.length
+    ? list.map(g => `<div class="theory-card"><h4>${escapeHtml(g.term)}</h4><p>${escapeHtml(g.def)}</p></div>`).join('')
+    : `<p class="section-sub">Aucun terme ne correspond à "${escapeHtml(filter)}".</p>`;
+}
+document.getElementById('glossary-search').addEventListener('input', function(){ renderGlossary(this.value); });
+renderGlossary('');
+
 /* ============ Recherche d'ouvertures ============ */
 document.getElementById('opening-search').addEventListener('input', function(){
   const q = this.value.trim().toLowerCase();
@@ -2585,6 +3096,253 @@ document.getElementById('opening-search').addEventListener('input', function(){
     if(q !== '' && visibleCount > 0) details.open = true;
   });
 });
+
+/* ============ JOUER CONTRE L'ORDINATEUR ============ */
+const PLAY_DIFFICULTIES = [
+  {label:'Débutant', elo:'Environ 800 Elo — parfait pour débuter.', skill:1, movetime:180},
+  {label:'Facile', elo:'Environ 1100 Elo — quelques fautes, encore abordable.', skill:4, movetime:280},
+  {label:'Intermédiaire', elo:'Environ 1500 Elo — un adversaire sérieux.', skill:8, movetime:450},
+  {label:'Avancé', elo:'Environ 1900 Elo — il punit la moindre erreur.', skill:13, movetime:700},
+  {label:'Expert', elo:'2300 Elo et plus — proche de la force maximale du moteur.', skill:20, movetime:1200}
+];
+
+let playBoard = null;
+let playGame = null;
+let playerColor = 'w';
+let playDifficultyIndex = 0;
+let playAdviceEnabled = true;
+let playSelectedSquare = null;
+let playGameOver = false;
+let playThinking = false;
+
+function ensurePlayBoard(){
+  if(playBoard) return;
+  playBoard = Chessboard('play-board', {
+    position:'start', draggable:true, pieceTheme: PIECE_THEME, showNotation:false,
+    onDrop: onDropPlay,
+    onSnapEnd: () => { if(playGame) playBoard.position(playGame.fen()); }
+  });
+  window.playBoard = playBoard;
+  renderCoords('play-ranks', 'play-files', 'white');
+  $('#play-board').on('click', '[data-square]', function(){
+    playSquareClick(this.getAttribute('data-square'));
+  });
+  document.getElementById('play-board').addEventListener('touchmove', function(e){ e.preventDefault(); }, {passive:false});
+}
+
+document.querySelectorAll('#play-difficulty-picker .level-btn').forEach(btn=>{
+  btn.onclick = function(){
+    document.querySelectorAll('#play-difficulty-picker .level-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    playDifficultyIndex = parseInt(this.dataset.diff, 10);
+    document.getElementById('play-difficulty-hint').textContent = PLAY_DIFFICULTIES[playDifficultyIndex].elo;
+  };
+});
+document.querySelectorAll('#play-color-picker .level-btn').forEach(btn=>{
+  btn.onclick = function(){
+    document.querySelectorAll('#play-color-picker .level-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+  };
+});
+document.getElementById('play-advice-toggle').onclick = function(){
+  playAdviceEnabled = !playAdviceEnabled;
+  this.classList.toggle('active', playAdviceEnabled);
+  this.textContent = playAdviceEnabled ? '💡 Mode conseil' : '🚫 Conseils coupés';
+  document.getElementById('play-advice-box').classList.toggle('hidden', !playAdviceEnabled);
+};
+
+document.getElementById('play-new-btn').onclick = () => newPlayGame();
+
+function newPlayGame(){
+  ensurePlayBoard();
+  const colorChoice = document.querySelector('#play-color-picker .level-btn.active').dataset.color;
+  playerColor = colorChoice === 'random' ? (Math.random() < 0.5 ? 'w' : 'b') : colorChoice;
+  playGame = new Chess();
+  playGameOver = false;
+  playThinking = false;
+  playSelectedSquare = null;
+  playBoard.orientation(playerColor === 'b' ? 'black' : 'white');
+  playBoard.start();
+  renderCoords('play-ranks', 'play-files', playerColor === 'b' ? 'black' : 'white');
+  clearHighlights('#play-board');
+  document.getElementById('play-advice-box').textContent = "Le conseil du coach apparaîtra ici après chacun de tes coups.";
+  document.getElementById('play-advice-box').className = 'puzzle-feedback-box' + (playAdviceEnabled ? '' : ' hidden');
+  renderPlayMoveList();
+  updatePlayStatus();
+  fitBoards();
+  if(playGame.turn() !== playerColor) setTimeout(requestEngineMove, 500);
+}
+
+function updatePlayStatus(text){
+  const el = document.getElementById('play-status-text');
+  if(text){ el.textContent = text; return; }
+  if(!playGame){ el.textContent = "Choisis tes réglages puis lance une nouvelle partie."; return; }
+  if(playGame.in_checkmate()){
+    const winnerIsPlayer = playGame.turn() !== playerColor;
+    el.textContent = winnerIsPlayer ? "Échec et mat — tu as gagné ! 🎉" : "Échec et mat — l'ordinateur gagne.";
+    return;
+  }
+  if(playGame.in_stalemate() || playGame.in_threefold_repetition() || playGame.insufficient_material() || playGame.in_draw()){
+    el.textContent = "Partie nulle.";
+    return;
+  }
+  if(playGame.turn() === playerColor){
+    el.textContent = playGame.in_check() ? "À toi de jouer — tu es en échec !" : "À toi de jouer.";
+  } else {
+    el.textContent = "L'ordinateur réfléchit…";
+  }
+}
+
+function checkPlayGameOver(){
+  if(!playGame) return false;
+  if(playGame.in_checkmate() || playGame.in_stalemate() || playGame.in_threefold_repetition() || playGame.insufficient_material() || playGame.in_draw()){
+    playGameOver = true;
+    updatePlayStatus();
+    playSound(playGame.in_checkmate() ? 'gameover' : 'move');
+    return true;
+  }
+  return false;
+}
+
+function renderPlayMoveList(){
+  const hist = playGame ? playGame.history() : [];
+  const el = document.getElementById('play-move-list');
+  if(hist.length === 0){ el.innerHTML = '<li class="empty">Aucun coup joué</li>'; return; }
+  let html = '';
+  for(let i=0;i<hist.length;i+=2){
+    html += `<li><span class="num">${Math.floor(i/2)+1}.</span><span>${hist[i]||''}</span><span>${hist[i+1]||''}</span></li>`;
+  }
+  el.innerHTML = html;
+  el.scrollTop = el.scrollHeight;
+}
+
+function clearPlaySelection(){
+  $('#play-board [data-square]').removeClass('selected-square');
+  $('#play-board .move-dot').remove();
+  playSelectedSquare = null;
+}
+function showPlayLegalDots(square){
+  const dests = playGame.moves({square:square, verbose:true}).map(m=>m.to);
+  dests.forEach(sq => $(`#play-board [data-square="${sq}"]`).append('<div class="move-dot"></div>'));
+}
+function playSquareClick(square){
+  if(!playGame || playGameOver || playThinking || playGame.turn() !== playerColor) return;
+  if(playSelectedSquare === square){ clearPlaySelection(); return; }
+  if(playSelectedSquare === null){
+    const piece = playGame.get(square);
+    if(piece && piece.color === playerColor){
+      playSelectedSquare = square;
+      $(`#play-board [data-square="${square}"]`).addClass('selected-square');
+      showPlayLegalDots(square);
+    }
+    return;
+  }
+  const from = playSelectedSquare;
+  clearPlaySelection();
+  attemptPlayMove(from, square);
+}
+function onDropPlay(source, target){
+  const ok = attemptPlayMove(source, target);
+  return ok ? undefined : 'snapback';
+}
+
+async function attemptPlayMove(source, target){
+  if(!playGame || playGameOver || playThinking || playGame.turn() !== playerColor) return false;
+  const fenBefore = playGame.fen();
+  const moveObj = playGame.move({from:source, to:target, promotion:'q'});
+  if(moveObj === null) return false;
+
+  playBoard.position(playGame.fen());
+  highlightMove('#play-board', moveObj.from, moveObj.to);
+  playSound(moveObj.captured ? 'capture' : (playGame.in_check() ? 'check' : 'move'));
+  renderPlayMoveList();
+  updatePlayStatus();
+  recordActivity();
+
+  if(playAdviceEnabled) giveLiveAdvice(fenBefore, moveObj);
+
+  if(checkPlayGameOver()) return true;
+  playThinking = true;
+  setTimeout(requestEngineMove, 550);
+  return true;
+}
+
+async function giveLiveAdvice(fenBefore, moveObj){
+  const box = document.getElementById('play-advice-box');
+  box.textContent = '⏳ Le coach réfléchit à ton coup…';
+  box.className = 'puzzle-feedback-box prompt';
+  try{
+    const before = await engineAnalyzeFEN(fenBefore);
+    const afterFen = playGame.fen();
+    const after = await engineAnalyzeFEN(afterFen);
+    const actualScoreForMover = -after.scoreForMover;
+    const drop = Math.max(0, before.scoreForMover - actualScoreForMover);
+    const isBest = before.bestMoveSan === moveObj.san;
+    const info = classify(drop, isBest);
+    let msg = `${info.glyph} ${info.label} — ${moveObj.san}.`;
+    if(info.cls !== 'best' && info.cls !== 'good' && before.bestMoveSan){
+      msg += ` ${before.bestMoveSan} était plus fort.`;
+    }
+    box.textContent = msg;
+    box.className = 'puzzle-feedback-box ' + (info.cls === 'best' || info.cls === 'good' ? 'good' : (info.cls === 'blunder' || info.cls === 'mistake' ? 'bad' : 'prompt'));
+    speak(msg);
+  }catch(e){
+    box.textContent = "Le conseil n'a pas pu être calculé cette fois.";
+  }
+}
+
+async function requestEngineMove(){
+  if(!playGame || playGameOver || playGame.turn() === playerColor) return;
+  updatePlayStatus();
+  await waitForEngineReady();
+  const diff = PLAY_DIFFICULTIES[playDifficultyIndex];
+  let bestSan = null;
+  if(sfState === 'ready'){
+    sfSetSkillLevel(diff.skill);
+    const res = await sfAnalyzeFEN(playGame.fen(), diff.movetime);
+    bestSan = res.bestMoveSan;
+    sfSetSkillLevel(20);
+  } else {
+    const res = await homemadeAnalyzeFEN(playGame.fen());
+    bestSan = res.bestMoveSan;
+  }
+  playThinking = false;
+  if(!playGame || playGameOver) return;
+  const mv = bestSan ? playGame.move(bestSan.replace(/[!?]+$/, '')) : null;
+  if(mv){
+    playBoard.position(playGame.fen());
+    highlightMove('#play-board', mv.from, mv.to);
+    playSound(mv.captured ? 'capture' : (playGame.in_check() ? 'check' : 'move'));
+    renderPlayMoveList();
+  }
+  updatePlayStatus();
+  checkPlayGameOver();
+}
+
+document.getElementById('play-undo-btn').onclick = () => {
+  if(!playGame || playThinking) return;
+  const hist = playGame.history();
+  if(hist.length === 0) return;
+  playGame.undo();
+  if(playGame.history().length > 0 && playGame.turn() !== playerColor){
+    // undo the computer's reply too, so it's the player's turn again
+    playGame.undo();
+  }
+  playGameOver = false;
+  clearPlaySelection();
+  clearHighlights('#play-board');
+  playBoard.position(playGame.fen());
+  renderPlayMoveList();
+  updatePlayStatus();
+  document.getElementById('play-advice-box').textContent = "Le conseil du coach apparaîtra ici après chacun de tes coups.";
+  document.getElementById('play-advice-box').className = 'puzzle-feedback-box' + (playAdviceEnabled ? '' : ' hidden');
+};
+
+document.getElementById('play-resign-btn').onclick = () => {
+  if(!playGame || playGameOver) return;
+  playGameOver = true;
+  updatePlayStatus("Partie abandonnée. Lance une nouvelle partie quand tu veux.");
+};
 
 /* Sizing initial */
 fitBoards();
