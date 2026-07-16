@@ -331,26 +331,32 @@
     background:repeating-linear-gradient(to bottom, var(--line) 0 8px, transparent 8px 16px);
     transform:translateX(-50%);z-index:0;
   }
-  .skill-node-row{display:flex;justify-content:center;position:relative;z-index:1;margin-bottom:6px;}
+  .skill-node-row{display:flex;justify-content:center;position:relative;z-index:1;margin-bottom:2px;}
   .skill-node-row.align-left{justify-content:flex-start;padding-left:8%;}
   .skill-node-row.align-right{justify-content:flex-end;padding-right:8%;}
   .skill-node{
-    display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
     background:none;border:none;font-family:'Inter',sans-serif;
   }
+  .skill-node-island{position:relative;width:78px;height:78px;display:flex;align-items:center;justify-content:center;}
+  .skill-node-island::before{
+    content:'';position:absolute;bottom:2px;width:70px;height:32px;border-radius:50%;
+    background:linear-gradient(160deg,#8FD19E,#5FAE79);box-shadow:0 8px 14px rgba(46,42,71,0.18);
+  }
   .skill-node-circle{
-    width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-    font-size:1.6rem;color:#fff;box-shadow:0 8px 18px rgba(46,42,71,0.2);border:4px solid #fff;
+    position:relative;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#fff;box-shadow:0 6px 14px rgba(46,42,71,0.22);border:4px solid #fff;
     transition:transform .15s cubic-bezier(.34,1.56,.64,1);
   }
+  .skill-node-circle svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
   .skill-node:active .skill-node-circle{transform:scale(0.92);}
   .skill-node.done .skill-node-circle{background:linear-gradient(160deg, var(--good), #2E9860);}
   .skill-node.progress .skill-node-circle{background:linear-gradient(160deg, var(--tile-orange), #E8862A);}
   .skill-node.todo .skill-node-circle{background:linear-gradient(160deg, var(--coral), var(--coral-dark));}
   .skill-node-label{font-size:0.74rem;font-weight:700;color:var(--navy);text-align:center;max-width:100px;}
   .skill-node-sub{font-size:0.64rem;color:var(--text-dim);}
-  .skill-chest{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1;margin-top:6px;}
-  .skill-chest-icon{font-size:2.2rem;}
+  .skill-chest{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;margin-top:10px;}
+  .skill-chest-icon{width:50px;height:50px;}
   .skill-chest-label{font-size:0.76rem;color:var(--text-dim);font-weight:600;}
 
   details.opening-category{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;background:var(--bg-panel-2);overflow:hidden;}
@@ -491,6 +497,12 @@
   .level-xp-track{height:8px;background:var(--line);border-radius:4px;overflow:hidden;}
   .level-xp-fill{height:100%;width:0%;background:linear-gradient(90deg, var(--coral), var(--coral-dark));border-radius:4px;transition:width .5s cubic-bezier(.34,1.2,.64,1);}
   .level-xp-label{font-size:0.72rem;color:var(--text-dim);margin-top:4px;font-family:'IBM Plex Mono',monospace;}
+
+  /* ---- PROFIL ---- */
+  .profile-header{display:flex;align-items:center;gap:16px;margin-bottom:26px;}
+  .profile-avatar{width:76px;height:76px;border-radius:50%;flex:0 0 auto;box-shadow:0 8px 20px rgba(46,42,71,0.18);}
+  .profile-name{font-family:'Lora',serif;font-weight:700;font-size:1.2rem;color:var(--navy);}
+  .profile-level-title{font-size:0.84rem;color:var(--coral);font-weight:600;margin:2px 0 8px;}
 
   .daily-card{
     display:flex;align-items:center;gap:14px;background:var(--accent-yellow-bg);
@@ -683,21 +695,24 @@
   @keyframes toastOut{ from{transform:translateX(0); opacity:1;} to{transform:translateX(120%); opacity:0;} }
 
   .onboarding-overlay{
-    position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
-    background:rgba(43,47,76,0.55);backdrop-filter:blur(4px);padding:20px;
+    position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;
+    background:linear-gradient(180deg, #BFE3F7 0%, #D7EEFA 55%, #8FD19E 100%);
+    animation:overlayFadeIn .3s ease;
   }
-  .onboarding-card{
-    background:var(--bg-panel);border-radius:26px;padding:30px 26px;max-width:420px;width:100%;
-    box-shadow:0 24px 60px rgba(43,47,76,0.4);text-align:center;
-    animation:onboardPop .4s cubic-bezier(.34,1.4,.64,1);
+  @keyframes overlayFadeIn{ from{opacity:0;} to{opacity:1;} }
+  .landing-scene{flex:1;min-height:0;position:relative;overflow:hidden;}
+  .landing-svg{width:100%;height:100%;display:block;}
+  .landing-card{
+    background:var(--bg-panel);border-radius:32px 32px 0 0;padding:28px 26px calc(28px + env(safe-area-inset-bottom,0px));
+    text-align:center;box-shadow:0 -14px 40px rgba(43,47,76,0.18);
+    animation:landingCardUp .45s cubic-bezier(.34,1.2,.64,1);
   }
-  @keyframes onboardPop{ from{transform:scale(0.9); opacity:0;} to{transform:scale(1); opacity:1;} }
-  .onboarding-card h2{font-family:'Lora',serif;color:var(--navy);font-size:1.3rem;margin:0 0 6px;}
-  .onboarding-sub{color:var(--text-dim);font-size:0.88rem;margin:0 0 18px;}
-  .onboarding-list{display:flex;flex-direction:column;gap:12px;text-align:left;margin-bottom:22px;}
-  .onboarding-item{display:flex;align-items:flex-start;gap:12px;font-size:0.85rem;color:var(--text);line-height:1.4;}
-  .onboarding-item .oi-emoji{font-size:1.3rem;flex:0 0 auto;}
-  #onboarding-close-btn{width:100%;}
+  @keyframes landingCardUp{ from{transform:translateY(40px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+  .landing-title{font-family:'Lora',serif;font-weight:700;font-size:2rem;color:var(--navy);margin:0 0 6px;}
+  .landing-title .accent{color:var(--coral);}
+  .landing-tagline{color:var(--text-dim);font-size:0.9rem;margin:0 0 20px;}
+  .landing-btn{width:100%;font-size:0.92rem;padding:14px;margin-bottom:10px;}
+  .landing-skip{background:none;border:none;color:var(--text-dim);font-size:0.82rem;cursor:pointer;text-decoration:underline;}
 
   section.panel.active{animation:panelFadeIn .32s ease;}
   @keyframes panelFadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
@@ -725,18 +740,55 @@
   <div id="toast-container"></div>
 
   <div id="onboarding-overlay" class="onboarding-overlay hidden">
-    <div class="onboarding-card">
-      <div class="knight-mark" style="width:52px;height:52px;font-size:1.8rem;margin:0 auto 14px;">♞</div>
-      <h2>Bienvenue dans ton Coach d'Échecs !</h2>
-      <p class="onboarding-sub">Cinq espaces pour progresser à ton rythme :</p>
-      <div class="onboarding-list">
-        <div class="onboarding-item"><span class="oi-emoji">🔍</span><span><b>Analyse</b> — colle une partie, un moteur Stockfish te montre tes erreurs.</span></div>
-        <div class="onboarding-item"><span class="oi-emoji">📖</span><span><b>Entraîner</b> — apprends 26 ouvertures coup par coup, avec indices.</span></div>
-        <div class="onboarding-item"><span class="oi-emoji">🧩</span><span><b>Puzzles</b> — résous des tactiques, classement façon lichess.</span></div>
-        <div class="onboarding-item"><span class="oi-emoji">📚</span><span><b>Théorie</b> — notation, lexique, et quoi jouer selon ton niveau.</span></div>
-        <div class="onboarding-item"><span class="oi-emoji">🏆</span><span><b>Progrès</b> — série quotidienne, niveau, badges, défi du jour.</span></div>
-      </div>
-      <button class="btn" id="onboarding-close-btn">C'est parti ! →</button>
+    <div class="landing-scene">
+      <svg viewBox="0 0 320 400" class="landing-svg" preserveAspectRatio="xMidYMax slice">
+        <circle cx="248" cy="52" r="42" fill="#FFE9B0" opacity="0.4"/>
+        <circle cx="248" cy="52" r="28" fill="#FFE29A"/>
+        <g fill="#ffffff" opacity="0.9">
+          <ellipse cx="60" cy="70" rx="30" ry="14"/><ellipse cx="85" cy="62" rx="22" ry="12"/><ellipse cx="38" cy="62" rx="18" ry="10"/>
+          <ellipse cx="200" cy="110" rx="24" ry="11"/><ellipse cx="222" cy="104" rx="16" ry="9"/>
+        </g>
+        <path d="M0,250 Q160,205 320,250 L320,400 L0,400 Z" fill="#8FD19E"/>
+        <path d="M0,290 Q160,260 320,290 L320,400 L0,400 Z" fill="#79C08C"/>
+        <g>
+          <rect x="35" y="270" width="7" height="34" rx="2" fill="#8B5E3C"/>
+          <circle cx="38" cy="262" r="22" fill="#5FAE79"/>
+          <circle cx="24" cy="272" r="15" fill="#5FAE79"/>
+          <circle cx="52" cy="272" r="15" fill="#5FAE79"/>
+        </g>
+        <g>
+          <rect x="272" y="300" width="6" height="28" rx="2" fill="#8B5E3C"/>
+          <circle cx="275" cy="294" r="18" fill="#5FAE79"/>
+        </g>
+        <path d="M55,392 Q95,330 88,270 Q82,215 150,196" stroke="#ffffff" stroke-width="6" stroke-dasharray="2 15" stroke-linecap="round" fill="none" opacity="0.9"/>
+        <g font-family="Inter, sans-serif" font-weight="700" font-size="15" fill="#fff" text-anchor="middle">
+          <circle cx="55" cy="380" r="15" fill="#7B68EE"/><text x="55" y="385">1</text>
+          <circle cx="86" cy="272" r="15" fill="#7B68EE"/><text x="86" y="277">2</text>
+          <circle cx="140" cy="205" r="15" fill="#FF9F43"/><text x="140" y="210">3</text>
+        </g>
+        <rect x="128" y="182" width="64" height="16" rx="4" fill="#C9BFEA"/>
+        <ellipse cx="160" cy="200" rx="34" ry="9" fill="rgba(46,42,71,0.15)"/>
+        <path d="M132,180 L188,180 L178,132 L142,132 Z" fill="#FDFBFF" stroke="#E8E1FA" stroke-width="2"/>
+        <rect x="144" y="108" width="32" height="26" rx="7" fill="#FDFBFF" stroke="#E8E1FA" stroke-width="2"/>
+        <rect x="150" y="86" width="20" height="26" rx="8" fill="#FDFBFF" stroke="#E8E1FA" stroke-width="2"/>
+        <polygon points="140,108 180,108 189,122 131,122" fill="#7B68EE"/>
+        <circle cx="140" cy="112" r="4" fill="#FFC857"/><circle cx="160" cy="105" r="5" fill="#FFC857"/><circle cx="180" cy="112" r="4" fill="#FFC857"/>
+        <rect x="156" y="62" width="8" height="26" rx="2" fill="#FFC857"/>
+        <rect x="147" y="70" width="26" height="8" rx="2" fill="#FFC857"/>
+        <circle cx="160" cy="58" r="6" fill="#FFC857"/>
+        <g>
+          <rect x="222" y="330" width="52" height="34" rx="5" fill="#B5875A"/>
+          <path d="M222,330 Q248,312 274,330" fill="#8B5E3C"/>
+          <rect x="222" y="328" width="52" height="7" fill="#6B4423"/>
+          <circle cx="248" cy="340" r="5" fill="#FFC857"/>
+        </g>
+      </svg>
+    </div>
+    <div class="landing-card">
+      <h1 class="landing-title">Chess<span class="accent">y</span></h1>
+      <p class="landing-tagline">Apprends. Progresse. Deviens un champion !</p>
+      <button class="btn landing-btn" id="onboarding-close-btn">Commencer l'aventure →</button>
+      <button class="landing-skip" id="onboarding-skip-btn">Passer pour l'instant</button>
     </div>
   </div>
 
@@ -752,21 +804,9 @@
       <svg viewBox="0 0 24 24" class="tabicon"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
       <span>Accueil</span>
     </button>
-    <button id="tab-analyze" class="tabbar-item" data-tab="analyze">
-      <svg viewBox="0 0 24 24" class="tabicon"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>
-      <span>Analyse</span>
-    </button>
     <button id="tab-train" class="tabbar-item" data-tab="train">
-      <svg viewBox="0 0 24 24" class="tabicon"><path d="M4 19V6a2 2 0 0 1 2-2h13v14H6a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h13"/><path d="M8 8h7M8 12h5"/></svg>
-      <span>Entraîner</span>
-    </button>
-    <button id="tab-puzzles" class="tabbar-item" data-tab="puzzles">
-      <svg viewBox="0 0 24 24" class="tabicon"><path d="M14 3v3a2 2 0 0 0 2 2h3M9 21H6a2 2 0 0 1-2-2v-3M4 9V6a2 2 0 0 1 2-2h3m7 17h3a2 2 0 0 0 2-2v-3"/><circle cx="12" cy="12" r="2.5"/></svg>
-      <span>Puzzles</span>
-    </button>
-    <button id="tab-theory" class="tabbar-item" data-tab="theory">
-      <svg viewBox="0 0 24 24" class="tabicon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-      <span>Théorie</span>
+      <svg viewBox="0 0 24 24" class="tabicon"><circle cx="6" cy="19" r="2.5"/><circle cx="12" cy="11" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M6 16.5V13a2 2 0 0 1 2-2h1.5M14.5 9H16a2 2 0 0 0 2-2V5.5"/></svg>
+      <span>Parcours</span>
     </button>
     <button id="tab-play" class="tabbar-item" data-tab="play">
       <svg viewBox="0 0 24 24" class="tabicon"><path d="M12 3v3m-3 0h6M8 9h8l-1 4H9L8 9Z"/><path d="M7 20l1.5-7h7L17 20Z"/><path d="M6 20h12"/></svg>
@@ -776,7 +816,13 @@
       <svg viewBox="0 0 24 24" class="tabicon"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l4-5 3 3 5-7"/></svg>
       <span>Progrès</span>
     </button>
+    <button id="tab-profile" class="tabbar-item" data-tab="profile">
+      <svg viewBox="0 0 24 24" class="tabicon"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+      <span>Profil</span>
+    </button>
   </nav>
+
+  <!-- Panneaux accessibles depuis les tuiles de l'Accueil (pas dans la barre du bas, comme la maquette) -->
 
   <!-- ================= HOME PANEL ================= -->
   <section id="panel-home" class="panel active">
@@ -797,7 +843,9 @@
           <div class="home-goal-text" id="home-goal-text">Chargement…</div>
           <div class="daily-track"><div class="daily-fill" id="home-goal-fill"></div></div>
         </div>
-        <div class="home-goal-mascot">🧙</div>
+        <div class="home-goal-mascot">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#7B68EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="#7B68EE"/></svg>
+        </div>
       </div>
     </div>
 
@@ -1005,14 +1053,7 @@
       <div class="streak-calendar" id="streak-calendar"></div>
     </div>
 
-    <h2 class="section-title">Ton parcours recommandé</h2>
-    <p class="section-sub">Suis ces étapes dans l'ordre pour progresser efficacement.</p>
-    <div class="path-list" id="path-list"></div>
-
     <div class="stats-row" id="progress-stats"></div>
-
-    <h2 class="section-title">Badges</h2>
-    <div class="badges-row" id="badges-row"></div>
 
     <h2 class="section-title">Ouvertures maîtrisées</h2>
     <p class="section-sub">Une ouverture est "maîtrisée" quand tu termines la ligne sans aucune erreur. Touche une case pour t'entraîner directement dessus.</p>
@@ -1044,7 +1085,31 @@
       </div>
       <p class="setting-hint">La qualité dépend des voix françaises installées sur ton appareil — certaines sonnent bien plus naturelles que d'autres.</p>
     </div>
-    <button class="btn secondary" id="reset-progress-btn" style="margin-top:18px;">🗑 Réinitialiser ma progression</button>
+    <button class="btn secondary" id="reset-progress-btn" style="margin-top:18px;">Réinitialiser ma progression</button>
+  </section>
+
+  <!-- ================= PROFIL PANEL ================= -->
+  <section id="panel-profile" class="panel">
+    <div class="profile-header">
+      <svg viewBox="0 0 100 100" class="profile-avatar">
+        <circle cx="50" cy="50" r="50" fill="#E8E1FA"/>
+        <circle cx="50" cy="42" r="18" fill="#7B68EE"/>
+        <path d="M18,95 Q18,62 50,62 Q82,62 82,95 Z" fill="#7B68EE"/>
+        <circle cx="50" cy="42" r="18" fill="none" stroke="#6552D0" stroke-width="2"/>
+      </svg>
+      <div class="profile-name-block">
+        <div class="profile-name">Toi</div>
+        <div class="profile-level-title" id="profile-level-title">Novice</div>
+        <div class="level-xp-track" style="width:160px;"><div class="level-xp-fill" id="profile-xp-fill"></div></div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Badges</h2>
+    <div class="badges-row" id="badges-row"></div>
+
+    <h2 class="section-title">Objectifs</h2>
+    <p class="section-sub">Suis ces étapes dans l'ordre pour progresser efficacement.</p>
+    <div class="path-list" id="path-list"></div>
   </section>
 
   <!-- ================= PUZZLES PANEL ================= -->
@@ -1148,30 +1213,24 @@
 const PIECE_THEME = 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
 
 /* ============ TABS ============ */
+function safeToggle(id, cond){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('active', cond);
+}
 document.getElementById('tab-home').onclick = () => switchTab('home');
-document.getElementById('tab-analyze').onclick = () => switchTab('analyze');
 document.getElementById('tab-train').onclick = () => switchTab('train');
-document.getElementById('tab-puzzles').onclick = () => switchTab('puzzles');
-document.getElementById('tab-theory').onclick = () => switchTab('theory');
 document.getElementById('tab-play').onclick = () => switchTab('play');
 document.getElementById('tab-progress').onclick = () => switchTab('progress');
+document.getElementById('tab-profile').onclick = () => switchTab('profile');
 function switchTab(name){
-  document.getElementById('tab-home').classList.toggle('active', name==='home');
-  document.getElementById('tab-analyze').classList.toggle('active', name==='analyze');
-  document.getElementById('tab-train').classList.toggle('active', name==='train');
-  document.getElementById('tab-puzzles').classList.toggle('active', name==='puzzles');
-  document.getElementById('tab-theory').classList.toggle('active', name==='theory');
-  document.getElementById('tab-play').classList.toggle('active', name==='play');
-  document.getElementById('tab-progress').classList.toggle('active', name==='progress');
-  document.getElementById('panel-home').classList.toggle('active', name==='home');
-  document.getElementById('panel-analyze').classList.toggle('active', name==='analyze');
-  document.getElementById('panel-train').classList.toggle('active', name==='train');
-  document.getElementById('panel-puzzles').classList.toggle('active', name==='puzzles');
-  document.getElementById('panel-theory').classList.toggle('active', name==='theory');
-  document.getElementById('panel-play').classList.toggle('active', name==='play');
-  document.getElementById('panel-progress').classList.toggle('active', name==='progress');
+  // Onglets présents dans la barre du bas
+  ['home','train','play','progress','profile'].forEach(t => safeToggle('tab-'+t, name===t));
+  // Tous les panneaux, y compris ceux ouverts uniquement depuis les tuiles de l'Accueil
+  ['home','analyze','train','puzzles','theory','play','progress','profile'].forEach(p => safeToggle('panel-'+p, name===p));
+
   if(name==='home' && typeof renderHomeTab === 'function') renderHomeTab();
   if(name==='progress' && typeof renderProgressTab === 'function') renderProgressTab();
+  if(name==='profile' && typeof renderProfileTab === 'function') renderProfileTab();
   if(name==='puzzles' && typeof ensurePuzzleBoard === 'function'){
     ensurePuzzleBoard();
     if(typeof refreshPuzzleHeader === 'function') refreshPuzzleHeader();
@@ -1186,6 +1245,7 @@ function switchTab(name){
       saveProgress();
     }
   }
+  window.scrollTo({top:0, behavior:'auto'});
   setTimeout(fitBoards, 30);
 }
 
@@ -2177,11 +2237,28 @@ function renderStreakCard(){
   cal.innerHTML = html;
 }
 
+function renderBadges(){
+  document.getElementById('badges-row').innerHTML = computeBadges().map(b => `
+    <div class="badge-chip ${b.unlocked ? 'unlocked' : ''}" title="${escapeHtml(b.desc)}">
+      <div class="hex"><span class="emoji">${b.emoji}</span></div>
+      <span class="badge-text"><span class="name">${escapeHtml(b.name)}</span></span>
+    </div>
+  `).join('');
+}
+
+function renderProfileTab(){
+  const level = levelFromXp(PROGRESS.xp || 0);
+  const xpIntoLevel = (PROGRESS.xp || 0) % XP_PER_LEVEL;
+  document.getElementById('profile-level-title').textContent = `Niveau ${level} — ${levelTitle(level)}`;
+  document.getElementById('profile-xp-fill').style.width = Math.round((xpIntoLevel / XP_PER_LEVEL) * 100) + '%';
+  renderBadges();
+  renderPathList();
+}
+
 function renderProgressTab(){
   refreshLevelDisplay();
   renderDailyChallenge();
   renderStreakCard();
-  renderPathList();
   const totalTrainable = trainableKeys().length;
   const masteredCount = Object.keys(PROGRESS.mastered).length;
   const avgAcc = PROGRESS.games.length
@@ -2194,13 +2271,6 @@ function renderProgressTab(){
     <div class="stat-card"><div class="big">${avgAcc !== null ? avgAcc + '%' : '—'}</div><div class="label">Précision moyenne (approx.)</div></div>
     <div class="stat-card"><div class="big">${PROGRESS.puzzlesSolved}</div><div class="label">Puzzles résolus</div></div>
   `;
-
-  document.getElementById('badges-row').innerHTML = computeBadges().map(b => `
-    <div class="badge-chip ${b.unlocked ? 'unlocked' : ''}" title="${escapeHtml(b.desc)}">
-      <div class="hex"><span class="emoji">${b.emoji}</span></div>
-      <span class="badge-text"><span class="name">${escapeHtml(b.name)}</span></span>
-    </div>
-  `).join('');
 
   document.getElementById('mastery-grid').innerHTML = trainableKeys().map(key => {
     const o = OPENINGS[key];
@@ -2687,6 +2757,11 @@ function trainSquareClick(square){
   attemptTrainMove(from, square);
 }
 
+const SKILL_ICON_CHECK = '<svg viewBox="0 0 24 24"><path d="M4 12l6 6L20 6"/></svg>';
+const SKILL_ICON_TARGET = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>';
+const SKILL_ICON_PAWN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M8 20h8M9.5 20c-.6-3 0-5 1-6.5.6-.9.6-1.6 0-2.3M14.5 20c.6-3 0-5-1-6.5-.6-.9-.6-1.6 0-2.3"/></svg>';
+const SKILL_ICON_TROPHY = '<svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M7 5H4a3 3 0 0 0 3 4M17 5h3a3 3 0 0 1-3 4"/><path d="M12 14v3M9 20h6l-1-3H10l-1 3Z"/></svg>';
+
 function renderSkillPath(){
   const el = document.getElementById('skill-path');
   if(!el) return;
@@ -2700,18 +2775,18 @@ function renderSkillPath(){
     const isDone = !!mastered[key];
     const isStarted = !isDone && (attempts[key] || 0) > 0;
     const status = isDone ? 'done' : (isStarted ? 'progress' : 'todo');
-    const icon = isDone ? '✓' : (isStarted ? '🎯' : '♟');
+    const icon = isDone ? SKILL_ICON_CHECK : (isStarted ? SKILL_ICON_TARGET : SKILL_ICON_PAWN);
     const sub = isDone ? 'Maîtrisée' : (isStarted ? `${attempts[key]} tentative(s)` : 'À découvrir');
     const align = i % 2 === 0 ? 'align-left' : 'align-right';
     html += `<div class="skill-node-row ${align}">
       <button class="skill-node ${status}" data-line="${key}">
-        <span class="skill-node-circle">${icon}</span>
+        <span class="skill-node-island"><span class="skill-node-circle">${icon}</span></span>
         <span class="skill-node-label">${escapeHtml(o.name.replace('Sicilienne — ','').replace('Gambit Dame — ',''))}</span>
         <span class="skill-node-sub">${escapeHtml(sub)}</span>
       </button>
     </div>`;
   });
-  html += `<div class="skill-chest"><span class="skill-chest-icon">🏆</span><span class="skill-chest-label">Répertoire complet !</span></div>`;
+  html += `<div class="skill-chest"><span class="skill-chest-icon" style="color:var(--tile-orange);">${SKILL_ICON_TROPHY.replace('<svg ', '<svg fill="none" stroke="currentColor" stroke-width="1.6" ')}</span><span class="skill-chest-label">Répertoire complet !</span></div>`;
   el.innerHTML = html;
   el.querySelectorAll('.skill-node').forEach(btn=>{
     btn.onclick = () => {
@@ -3914,11 +3989,13 @@ showNextTrivia();
 if(!PROGRESS.onboarded){
   document.getElementById('onboarding-overlay').classList.remove('hidden');
 }
-document.getElementById('onboarding-close-btn').onclick = function(){
+function dismissOnboarding(){
   document.getElementById('onboarding-overlay').classList.add('hidden');
   PROGRESS.onboarded = true;
   saveProgress();
-};
+}
+document.getElementById('onboarding-close-btn').onclick = dismissOnboarding;
+document.getElementById('onboarding-skip-btn').onclick = dismissOnboarding;
 
 /* ============ ACCUEIL (dashboard) ============ */
 const HOME_GREETINGS = [
