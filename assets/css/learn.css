@@ -67,7 +67,7 @@ body.opening-map-page{background:#c9f0d8;}
 body.opening-map-page::before,body.opening-map-page::after{display:none;}
 .opening-map-page .map-app{max-width:none;margin:0;padding:0;}
 .opening-map-page .page{padding:0;}
-.opening-map-page .teal-hero{border-radius:0;margin:0;min-height:100vh;padding:14px 16px 0;background-color:#bcebd9;background-image:linear-gradient(rgba(208,247,223,.2),rgba(208,247,223,.35)),url('../../82972140-0c19-44eb-b30c-9cb52953d57a.png');background-size:cover;background-position:center top;}
+.opening-map-page .teal-hero{border-radius:0;margin:0;min-height:100vh;padding:14px 16px 0;}
 .opening-map-page .teal-hero::before{display:none;}
 .opening-map-page .search-input,.opening-map-page .opening-groups,.opening-map-page .section-sub{display:none;}
 .opening-map-page .skill-path{margin-left:-16px;margin-right:-16px;}
@@ -78,7 +78,20 @@ body.opening-map-page::before,body.opening-map-page::after{display:none;}
 .map-island.done .island-ground{box-shadow:none;}
 .map-island.done::after{z-index:7;}
 .map-island .map-label,.map-island .map-state{z-index:8;}
-@media (min-width:680px){.opening-map-page .teal-hero{max-width:680px;margin:0 auto;box-shadow:0 0 60px rgba(48,105,76,.2)}body.opening-map-page{background:#e6f9eb;}}
+
+/* Fond vectoriel long : il reste propre sur toute la longueur du parcours. */
+.opening-map-page .teal-hero{background:#c9f0d8 url('../illustrations/opening-map-bg.svg') center top/100% auto repeat-y;}
+.opening-map-page .skill-path{height:var(--map-height,5035px);margin-top:12px;overflow:visible;background:none;}
+.opening-map-page .map-route,.opening-map-page .map-cloud,.opening-map-page .map-stop,.opening-map-page .map-chest{display:none;}
+.map-nodes{position:relative;width:100%;height:100%;}
+.map-nodes .map-island{position:absolute;top:var(--top);z-index:3;}
+.map-nodes .map-island.side-left{left:8%;}.map-nodes .map-island.side-right{right:8%;}
+.map-nodes .map-island.current .island-ground{box-shadow:0 0 0 5px rgba(255,255,255,.86),0 8px 14px rgba(38,112,68,.25);}
+.map-nodes .map-island.locked{filter:grayscale(.9) opacity(.75);cursor:not-allowed;}
+.map-nodes .map-island.locked .island-piece{font-size:28px;text-shadow:none;}
+.map-nodes .map-island.locked .map-label{background:#eef0ed;color:#78837b;}
+.map-nodes .map-island.locked .map-state{color:#76817a;}
+.map-nodes .map-island.done::after{content:'✓';z-index:9;}
 
 /* ---- Bibliothèque complète (accordéon) ---- */
 details.opening-category{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;background:var(--bg-panel-2);overflow:hidden;}

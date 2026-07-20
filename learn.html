@@ -57,23 +57,17 @@ const SKILL_ICON_LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" 
 function renderSkillPath(){
   const el = document.getElementById('skill-path');
   const mastered = PROGRESS.mastered || {};
-  const attempts = PROGRESS.attempts || {};
-  const statusFor = key => mastered[key] ? 'done' : ((attempts[key] || 0) ? 'progress' : 'locked');
-  const islandArt = {italienne:'379fd17e-d8be-4a0f-a913-57bebd14baa2.png', espagnole:'38fb1f70-0810-4814-a106-41f640b3b657.png', najdorf:'426ea1df-0165-41ca-b008-737c1dfdd81a.png', qgd:'94a16b5e-5dd2-4b32-a169-f32203a7f57a.png'};
-  const island = (key, title, icon, extra='') => `<a class="map-island ${statusFor(key)}" href="openings.html?opening=${key}">
-    <span class="island-ground"><img class="island-art" src="${islandArt[key]}" alt=""><span class="island-rock"></span><span class="island-tree tree-a"></span><span class="island-tree tree-b"></span><span class="island-piece">${icon}</span></span>
-    <span class="map-label">${title}</span><span class="map-state">${mastered[key]?'Maîtrisée':((attempts[key]||0)?'En cours':'À découvrir')}</span>${extra}</a>`;
-  el.innerHTML = `
-    <svg class="map-route" viewBox="0 0 320 760" preserveAspectRatio="none" aria-hidden="true"><path d="M160 34 C55 95 270 145 162 225 S52 355 172 427 S285 535 150 610 S55 700 164 744"/></svg>
-    <span class="map-cloud cloud-one"></span><span class="map-cloud cloud-two"></span><span class="map-cloud cloud-three"></span>
-    <div class="map-stop stop-italian">${island('italienne','Italienne','♜')}</div>
-    <div class="map-stop stop-spanish">${island('espagnole','Espagnole','♞')}</div>
-    <div class="map-stop stop-sicilian">${island('najdorf','Sicilienne','♛')}</div>
-    <section class="map-stop stop-queens">
-      ${island('qgd','Gambit Dame','♕','<span class="map-module-count">3 modules</span>')}
-      <div class="queen-submodules"><a href="openings.html?opening=qgd">Refusé</a><a href="openings.html?opening=qga">Accepté</a><a href="openings.html?opening=slav">Slave</a></div>
-    </section>
-    <a class="map-chest" href="#opening-groups"><span>♜</span><b>Explorer toutes les ouvertures</b></a>`;
+  const path = ['italienne','quatre_cavaliers','ecossaise','vienne','espagnole','gambit_roi','londres','colle','qgd','qga','slav','anglaise','reti','francaise','carokann','scandinave','pirc','alekhine','indienne_roi','nimzo_indienne','grunfeld','najdorf','dragon','sveshnikov'];
+  const island = (key, index) => {
+    const unlocked = index === 0 || !!mastered[path[index - 1]];
+    const status = mastered[key] ? 'done' : (unlocked ? 'current' : 'locked');
+    const title = OPENINGS[key].name.replace('Sicilienne — ','').replace('Gambit Dame — ','');
+    const position = `--top:${index * 205 + 20}px;--side:${index % 2 ? 'right' : 'left'};`;
+    const inner = `<span class="island-ground"><span class="island-rock"></span><span class="island-tree tree-a"></span><span class="island-tree tree-b"></span><span class="island-piece">${unlocked?'♜':'🔒'}</span></span><span class="map-label">${escapeHtml(title)}</span><span class="map-state">${mastered[key]?'Maîtrisée':(unlocked?'À apprendre':'Verrouillée')}</span>`;
+    return unlocked ? `<a class="map-island ${status} side-${index % 2 ? 'right' : 'left'}" style="${position}" href="openings.html?opening=${key}">${inner}</a>` : `<span class="map-island ${status} side-${index % 2 ? 'right' : 'left'}" style="${position}" aria-label="${escapeHtml(title)} verrouillée">${inner}</span>`;
+  };
+  el.style.setProperty('--map-height', `${path.length * 205 + 115}px`);
+  el.innerHTML = `<div class="map-nodes">${path.map(island).join('')}</div>`;
   document.getElementById('learn-gem-count').textContent = PROGRESS.xp || 0;
 }
 
