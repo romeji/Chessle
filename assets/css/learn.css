@@ -93,6 +93,167 @@ body.opening-map-page::before,body.opening-map-page::after{display:none;}
 .map-nodes .map-island.locked .map-state{color:#76817a;}
 .map-nodes .map-island.done::after{content:'✓';z-index:9;}
 
+/* ============================================================
+   Carte d'aventure 2.0 — parcours gamifié des ouvertures
+   ============================================================ */
+.opening-map-page .teal-hero{
+  background:
+    radial-gradient(circle at 18% 7%,rgba(255,255,255,.7) 0 2px,transparent 3px) 0 0/46px 46px,
+    linear-gradient(180deg,#7ed8c6 0,#c8efd4 15%,#e8f5cf 42%,#d7edc4 68%,#bfe2c5 100%);
+}
+.opening-map-page .teal-hero::after{
+  content:'';position:fixed;left:0;right:0;top:0;height:190px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(29,126,105,.16),transparent);z-index:0;
+}
+.opening-map-page .subpage-header{padding:4px 2px}
+.opening-map-page .teal-title{font-size:1.72rem;text-shadow:0 2px 8px rgba(30,109,83,.14)}
+.opening-map-page .teal-sub{max-width:290px}
+.opening-map-page .skill-path{margin-top:4px;isolation:isolate}
+
+.quest-road{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}
+.quest-road path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.road-shadow{stroke:rgba(105,73,35,.16);stroke-width:48;transform:translateY(7px)}
+.road-main{stroke:#dcb77e;stroke-width:45}
+.road-dashes{stroke:#f6deb2;stroke-width:3;stroke-dasharray:4 11;opacity:.8}
+.map-scenery{position:absolute;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(ellipse at 7% 8%,rgba(255,255,255,.72) 0 22px,transparent 24px),
+  radial-gradient(ellipse at 91% 18%,rgba(255,255,255,.58) 0 28px,transparent 30px),
+  radial-gradient(ellipse at 8% 41%,rgba(255,255,255,.55) 0 20px,transparent 22px),
+  radial-gradient(ellipse at 92% 63%,rgba(255,255,255,.58) 0 26px,transparent 28px);
+}
+
+.map-nodes .map-island{width:136px;min-width:136px;filter:none}
+.map-nodes .map-island.side-left{left:calc(29% - 68px)}
+.map-nodes .map-island.side-right{right:calc(29% - 68px)}
+.map-island .island-ground{
+  width:126px;height:86px;overflow:visible;
+  background:linear-gradient(180deg,#a9e16e 0 46%,#65b45c 47% 57%,#b37a43 58% 77%,#80552e 78%);
+  border-radius:50% 50% 46% 46%/43% 43% 57% 57%;
+  box-shadow:0 12px 0 #704725,0 17px 19px rgba(50,102,59,.22),inset 0 5px 0 rgba(255,255,255,.32);
+}
+.map-island .island-ground::before{
+  content:'';position:absolute;inset:7px 8px 30px;border-radius:50%;
+  background:radial-gradient(circle at 25% 35%,#eaf7b5 0 4px,transparent 5px),linear-gradient(145deg,#d4f399,#76c85f);
+}
+.map-island .island-ground::after{display:none}
+.island-grass{position:absolute;z-index:2;left:13px;bottom:34px;width:16px;height:22px;border-radius:80% 20%;background:#3c9b50;transform:rotate(-20deg);box-shadow:85px 3px 0 #439d4d}
+.map-island .island-piece{z-index:4;bottom:30px;font-size:48px;color:#fff9da;text-shadow:0 3px 0 #6f6247,0 6px 12px rgba(31,65,42,.25)}
+.island-spark{position:absolute;z-index:5;width:7px;height:7px;background:#fff8a8;transform:rotate(45deg);opacity:0}
+.spark-a{right:23px;top:9px}.spark-b{left:21px;top:26px;transform:rotate(45deg) scale(.6)}
+.map-island.current .island-spark{opacity:1;animation:islandSpark 1.6s ease-in-out infinite}
+.map-island.current .spark-b{animation-delay:.6s}
+@keyframes islandSpark{50%{transform:rotate(45deg) scale(1.6);filter:brightness(1.2)}}
+.map-nodes .map-island.current .island-ground{box-shadow:0 12px 0 #704725,0 0 0 6px rgba(255,255,255,.88),0 20px 24px rgba(43,122,66,.28);animation:currentFloat 2.6s ease-in-out infinite}
+@keyframes currentFloat{50%{transform:translateY(-5px)}}
+.map-nodes .map-island.locked{filter:none;opacity:1}
+.map-nodes .map-island.locked .island-ground{filter:saturate(.72) brightness(.92);opacity:1}
+.map-nodes .map-island.locked .island-ground::before{background:linear-gradient(145deg,#c4dda0,#79ad69)}
+.map-nodes .map-island.locked .island-piece{font-size:29px;text-shadow:0 3px 6px rgba(30,44,35,.3);filter:grayscale(1)}
+.map-nodes .map-island.done .island-ground{box-shadow:0 12px 0 #704725,0 0 0 5px rgba(255,255,255,.88),0 18px 22px rgba(43,122,66,.22)}
+.map-nodes .map-island.done::after{top:-3px;right:5px;background:#32bd68;box-shadow:0 4px 9px rgba(28,116,59,.25)}
+.map-island .map-label{margin-top:9px;max-width:150px;overflow:hidden;text-overflow:ellipsis;padding:6px 11px;font-size:.72rem;color:#294a39;border:1px solid rgba(34,88,57,.08)}
+.map-island.current .map-label{background:#fff7d9;color:#875e16;box-shadow:0 5px 14px rgba(111,77,19,.17)}
+.map-island .map-state{font-size:.57rem;margin-top:3px;color:#4f7d66}
+.map-island.locked .map-state{color:#76847c}
+.island-stars{position:absolute;top:117px;color:#f3b833;font-size:.61rem;letter-spacing:1px;text-shadow:0 1px #fff}
+
+.world-banner{position:absolute;z-index:7;top:var(--world-top);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;width:230px;padding:8px 11px;border-radius:17px;background:rgba(255,255,255,.84);border:1px solid rgba(255,255,255,.94);box-shadow:0 9px 22px rgba(45,104,67,.12);backdrop-filter:blur(9px)}
+.world-banner>span{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#eaf7de;font-size:1.25rem}
+.world-banner div{display:flex;flex-direction:column;line-height:1.1}
+.world-banner small{font-size:.5rem;letter-spacing:.13em;color:#5b8e72;font-weight:900}
+.world-banner strong{font-family:var(--font-display);font-size:.78rem;color:#284c39}
+.world-banner em{font-size:.55rem;color:#7b9487;font-style:normal;font-weight:700}
+
+.quest-chest{position:absolute;z-index:6;top:var(--chest-top);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;color:#5b4521}
+.quest-chest>span{font-size:41px;line-height:1;filter:drop-shadow(0 7px 6px rgba(103,68,15,.22));animation:chestBob 2.4s ease-in-out infinite}
+@keyframes chestBob{50%{transform:translateY(-4px) rotate(2deg)}}
+.quest-chest b{background:#fff5d5;border-radius:11px;padding:4px 8px;font-size:.61rem;box-shadow:0 4px 9px rgba(103,68,15,.14)}
+.quest-chest small{font-size:.51rem;color:#7c765f;font-weight:800;margin-top:2px}
+.final-castle{position:absolute;z-index:4;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-size:64px;filter:drop-shadow(0 10px 8px rgba(46,76,48,.2));white-space:nowrap}
+.final-castle strong{font-family:var(--font-display);font-size:.78rem;background:#fff;padding:5px 10px;border-radius:11px;color:#314d3d}
+.final-castle small{font-size:.56rem;color:#587462;font-weight:800;margin-top:3px}
+
+@media(min-width:700px){
+  .opening-map-page .teal-hero{max-width:520px;margin:22px auto;border-radius:32px;box-shadow:0 28px 70px rgba(43,91,64,.18)}
+}
+
+/* Direction artistique illustrée — royaume ChessQuest */
+body.opening-map-page{
+  background:#8fdac8 url('../illustrations/opening-kingdom-v2.png') center center/cover fixed no-repeat;
+}
+body.opening-map-page::before{
+  display:none;
+}
+body.opening-map-page::after{
+  display:block;content:'';position:fixed;z-index:-1;inset:0;
+  width:auto;height:auto;border-radius:0;opacity:1;
+  background:linear-gradient(180deg,rgba(34,141,124,.28),rgba(233,251,220,.14) 22%,rgba(66,114,70,.18));
+  pointer-events:none;
+}
+.opening-map-page .teal-hero{
+  background:linear-gradient(180deg,rgba(72,184,164,.78) 0,rgba(198,240,216,.24) 250px,rgba(255,255,255,.02) 100%);
+  backdrop-filter:saturate(1.08);
+}
+.opening-map-page .teal-hero::after{
+  background:linear-gradient(180deg,rgba(17,98,83,.24),transparent);
+}
+.opening-map-page .quest-road{opacity:0}
+.opening-map-page .map-scenery{display:none}
+.opening-map-page .subpage-header{
+  position:relative;z-index:20;margin:0 -4px 8px;padding:6px 7px;border-radius:18px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(10px);
+}
+.opening-map-page .subpage-header.on-color .subpage-back{background:rgba(255,255,255,.84)}
+.opening-map-page .subpage-header.on-color .subpage-back svg{stroke:#245746}
+.opening-map-page .subpage-header.on-color .subpage-badge{background:rgba(255,255,255,.84);color:#684fc8}
+.opening-map-page .subpage-header.on-color .subpage-badge svg{fill:#795de0}
+.opening-map-page .teal-title,.opening-map-page .teal-sub{filter:drop-shadow(0 2px 5px rgba(28,93,72,.18))}
+
+.map-island .island-ground{
+  border:1px solid rgba(255,255,255,.48);
+  box-shadow:0 11px 0 #78502b,0 16px 0 rgba(63,43,22,.13),0 23px 30px rgba(27,76,43,.28),inset 0 5px 0 rgba(255,255,255,.38);
+}
+.map-island.world-2 .island-ground{background:linear-gradient(180deg,#c2df69 0 46%,#85b94d 47% 57%,#a5693f 58% 77%,#70432b 78%)}
+.map-island.world-3 .island-ground{background:linear-gradient(180deg,#79d4a5 0 46%,#47a878 47% 57%,#987052 58% 77%,#604837 78%)}
+.map-island.world-4 .island-ground{background:linear-gradient(180deg,#9bc8df 0 46%,#6aa6c5 47% 57%,#8b7785 58% 77%,#5b4d5b 78%)}
+.map-island.world-5 .island-ground{background:linear-gradient(180deg,#dd9964 0 46%,#bc674b 47% 57%,#835044 58% 77%,#55372f 78%)}
+.map-island.world-2 .island-ground::before{background:linear-gradient(145deg,#e6f39f,#9cc954)}
+.map-island.world-3 .island-ground::before{background:linear-gradient(145deg,#b7efd1,#55b989)}
+.map-island.world-4 .island-ground::before{background:linear-gradient(145deg,#d4edfa,#7db7d3)}
+.map-island.world-5 .island-ground::before{background:linear-gradient(145deg,#ffd09c,#ce7757)}
+.map-nodes .map-island.locked .island-ground{filter:saturate(.55) brightness(.88);opacity:.96}
+.map-island .map-label{
+  background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 8px 18px rgba(31,68,44,.19);backdrop-filter:blur(8px);
+}
+.map-island.current .map-label{background:#fff3b8;color:#76510f;border-color:#fff8da}
+.map-island.current::before{
+  content:'À TOI DE JOUER';position:absolute;z-index:10;top:-25px;left:50%;transform:translateX(-50%);
+  padding:4px 8px;border-radius:99px;background:#7255da;color:#fff;font-size:.48rem;font-weight:1000;
+  letter-spacing:.08em;white-space:nowrap;box-shadow:0 5px 12px rgba(77,53,165,.28);
+}
+.world-banner{
+  background:linear-gradient(120deg,rgba(255,255,255,.94),rgba(245,255,239,.86));
+  border:1px solid rgba(255,255,255,.98);box-shadow:0 14px 30px rgba(30,79,47,.2);
+}
+.world-banner::after{
+  content:'';position:absolute;left:18px;right:18px;bottom:-5px;height:8px;border-radius:50%;
+  background:rgba(35,77,47,.14);filter:blur(5px);z-index:-1;
+}
+.quest-chest>span{font-size:48px}
+.quest-chest b{background:linear-gradient(120deg,#fff6cc,#fff);border:1px solid #ffe8a3;box-shadow:0 7px 16px rgba(95,65,16,.2)}
+.final-castle{
+  padding:16px 32px 14px;border-radius:28px;background:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.9);backdrop-filter:blur(12px);
+  box-shadow:0 18px 40px rgba(38,72,43,.22);
+}
+
+@media(max-width:480px){
+  body.opening-map-page::before{background-position:52% center}
+  .opening-map-page .teal-hero{padding-left:14px;padding-right:14px}
+}
+
 /* ---- Bibliothèque complète (accordéon) ---- */
 details.opening-category{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;background:var(--bg-panel-2);overflow:hidden;}
 details.opening-category summary{

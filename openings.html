@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="assets/css/components.css">
 <link rel="stylesheet" href="assets/css/animations.css">
 <link rel="stylesheet" href="assets/css/learn.css">
+<link rel="stylesheet" href="assets/css/opening-gamification.css">
 </head>
 <body data-page="play" class="opening-lesson-page">
 <div id="toast-container"></div>
@@ -20,36 +21,81 @@
   <section class="page">
     <div class="lesson-header opening-immersive-header">
       <a class="lesson-back" href="learn.html" aria-label="Retour aux ouvertures"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></a>
-      <div>
+      <div class="opening-title-wrap">
         <div class="lesson-title" id="line-name">Choisis une ouverture</div>
-        <div class="lesson-progress-label" id="lesson-progress-label"></div>
+        <div class="opening-rank"><span class="opening-rank-dot"></span><span id="opening-rank-label">En apprentissage</span></div>
       </div>
+      <div class="opening-xp-chip" aria-label="Points d'expérience"><span class="xp-gem">◆</span><strong id="opening-xp">0</strong></div>
     </div>
-    <div class="track opening-track" style="margin-bottom:18px;"><div class="track-fill" id="lesson-track-fill"></div></div>
 
-    <div class="board-frame" style="margin:0 auto 14px;display:block;width:fit-content;">
-      <div class="coord-ranks" id="train-ranks"></div>
-      <div id="train-board"></div>
-      <div class="coord-files" id="train-files"></div>
+    <section class="opening-mission" aria-labelledby="mission-title">
+      <div class="mission-icon">♘</div>
+      <div class="mission-copy">
+        <span class="mission-eyebrow">MISSION DU JOUR</span>
+        <strong id="mission-title">Mémorise la ligne sans erreur</strong>
+        <span id="mission-reward">Récompense parfaite : +30 XP</span>
+      </div>
+      <div class="mission-stars" id="mission-stars" aria-label="Trois étoiles disponibles">★★★</div>
+    </section>
+
+    <div class="opening-stage">
+      <div class="stage-topline">
+        <span id="lesson-progress-label">Étape 1/1</span>
+        <strong id="stage-percent">0%</strong>
+      </div>
+      <div class="track opening-track"><div class="track-fill" id="lesson-track-fill"></div></div>
+      <div class="progress-dots" id="train-dots"></div>
     </div>
-    <div class="progress-dots" id="train-dots" style="justify-content:center;margin-bottom:14px;"></div>
 
-    <div class="home-goal-label" style="margin-bottom:4px;">Objectif de la ligne</div>
-    <p class="lesson-desc" id="line-intro">Sélectionne une ouverture pour commencer.</p>
+    <section class="opening-play-card">
+      <div class="turn-banner">
+        <span class="turn-pulse"></span>
+        <span id="turn-label">À toi de jouer</span>
+        <span class="opening-color-badge" id="opening-color-badge">Blancs</span>
+      </div>
+      <div class="board-frame opening-board-frame">
+        <div class="coord-ranks" id="train-ranks"></div>
+        <div id="train-board"></div>
+        <div class="coord-files" id="train-files"></div>
+      </div>
 
-    <details class="opening-category" style="margin-bottom:14px;">
-      <summary>Pourquoi jouer cette ouverture ?</summary>
-      <p class="lesson-desc" id="line-about" style="padding:0 16px 14px;"></p>
-    </details>
+      <div class="coach-panel">
+        <div class="coach-avatar" aria-hidden="true">♞</div>
+        <div class="coach-message">
+          <span>Coach Chessy</span>
+          <div class="feedback-box" id="train-feedback">Choisis une ouverture pour démarrer.</div>
+        </div>
+      </div>
 
-    <div class="feedback-box" id="train-feedback">Choisis une ouverture pour démarrer.</div>
-    <ol class="move-list" id="train-move-list" style="margin:14px 0;"><li class="empty">Aucun coup joué</li></ol>
+      <div class="btn-row opening-actions">
+        <button class="opening-tool" id="hint-btn"><span>💡</span><strong>Indice</strong><small>-1 étoile</small></button>
+        <button class="opening-tool" id="reset-btn"><span>↻</span><strong>Recommencer</strong><small>À zéro</small></button>
+        <button class="opening-tool active" id="autohint-toggle"><span>✦</span><strong>Guide</strong><small>Activé</small></button>
+      </div>
+    </section>
 
-    <div class="btn-row opening-actions">
-      <button class="btn secondary" id="hint-btn">Indice</button>
-      <button class="btn secondary" id="reset-btn">Recommencer</button>
-      <button class="tts-btn active" id="autohint-toggle">Indices auto</button>
-    </div>
+    <section class="opening-reward hidden" id="opening-reward" aria-live="polite">
+      <div class="reward-crown">♛</div>
+      <span class="reward-kicker">LIGNE TERMINÉE</span>
+      <h2 id="reward-title">Ouverture maîtrisée !</h2>
+      <div class="reward-stars" id="reward-stars">★★★</div>
+      <p id="reward-summary">Sans erreur. Ta mémoire d’ouverture progresse.</p>
+      <div class="reward-loot"><strong id="reward-xp">+30 XP</strong><span>•</span><span id="reward-attempts">1 essai</span></div>
+      <button class="btn" id="replay-btn">Rejouer pour consolider</button>
+    </section>
+
+    <section class="opening-knowledge">
+      <div class="home-goal-label">PLAN DE JEU</div>
+      <p class="lesson-desc" id="line-intro">Sélectionne une ouverture pour commencer.</p>
+      <details class="opening-category">
+        <summary>Pourquoi jouer cette ouverture ?</summary>
+        <p class="lesson-desc" id="line-about" style="padding:0 16px 14px;"></p>
+      </details>
+      <details class="opening-category">
+        <summary>Voir les coups mémorisés</summary>
+        <ol class="move-list" id="train-move-list"><li class="empty">Aucun coup joué</li></ol>
+      </details>
+    </section>
 
     <details class="opening-category" style="margin-top:20px;">
       <summary>Choisir une autre ouverture</summary>
@@ -60,7 +106,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.4/confetti.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 <script src="assets/js/progress.js"></script>
 <script src="assets/js/chesscom.js"></script>
 <script src="assets/js/animations.js"></script>
@@ -74,7 +120,37 @@ function renderDots(){
   if(!currentLine){ el.innerHTML = ''; return; }
   el.innerHTML = currentLine.moves.map((_,i)=>`<span class="dot ${i<trainPly?'done':''} ${i===trainPly?'current':''}"></span>`).join('');
   document.getElementById('lesson-progress-label').textContent = `Leçon ${Math.min(trainPly+1, currentLine.moves.length)}/${currentLine.moves.length}`;
-  document.getElementById('lesson-track-fill').style.width = Math.round((trainPly/currentLine.moves.length)*100) + '%';
+  const percent = Math.round((trainPly/currentLine.moves.length)*100);
+  document.getElementById('lesson-track-fill').style.width = percent + '%';
+  document.getElementById('stage-percent').textContent = percent + '%';
+  renderOpeningHud();
+}
+let openingCelebrationShown = false;
+let hintsUsed = 0;
+function openingStars(){
+  if(lineMistakes === 0 && hintsUsed === 0) return 3;
+  if(lineMistakes <= 1 && hintsUsed <= 1) return 2;
+  return 1;
+}
+function renderOpeningHud(){
+  if(!currentLine) return;
+  const stars = openingStars();
+  document.getElementById('opening-xp').textContent = PROGRESS.xp || 0;
+  document.getElementById('mission-stars').textContent = '★'.repeat(stars) + '☆'.repeat(3-stars);
+  document.getElementById('opening-rank-label').textContent = PROGRESS.mastered[currentLineKey] ? 'Déjà maîtrisée' : 'En apprentissage';
+  document.getElementById('opening-color-badge').textContent = currentLine.forColor === 'b' ? 'Noirs' : (currentLine.forColor === 'w' ? 'Blancs' : 'Démo');
+  document.getElementById('turn-label').textContent = trainPly >= currentLine.moves.length ? 'Mission accomplie' : 'Trouve le prochain coup';
+  if(trainPly >= currentLine.moves.length && !openingCelebrationShown){
+    openingCelebrationShown = true;
+    const reward = document.getElementById('opening-reward');
+    reward.classList.remove('hidden');
+    document.getElementById('reward-title').textContent = lineMistakes === 0 ? 'Ouverture maîtrisée !' : 'Ligne terminée !';
+    document.getElementById('reward-stars').textContent = '★'.repeat(stars) + '☆'.repeat(3-stars);
+    document.getElementById('reward-summary').textContent = lineMistakes === 0 ? 'Sans erreur. Ta mémoire d’ouverture progresse.' : `${lineMistakes} erreur${lineMistakes>1?'s':''}. Rejoue-la pour obtenir les 3 étoiles.`;
+    document.getElementById('reward-xp').textContent = lineMistakes === 0 ? '+30 XP' : '+10 XP';
+    document.getElementById('reward-attempts').textContent = `${(PROGRESS.attempts[currentLineKey] || 0) + 1} essai${(PROGRESS.attempts[currentLineKey] || 0) ? 's' : ''}`;
+    setTimeout(()=>reward.scrollIntoView({behavior:'smooth',block:'center'}), 750);
+  }
 }
 function renderTrainMoveList(){
   const hist = trainGame.history();
@@ -87,6 +163,8 @@ function renderTrainMoveList(){
 }
 document.getElementById('hint-btn').onclick = () => {
   if(!currentLine) return;
+  hintsUsed++;
+  renderOpeningHud();
   const expected = currentLine.moves[trainPly];
   const expectedColor = (trainPly % 2 === 0) ? 'w' : 'b';
   if(!expected || expectedColor !== currentLine.forColor) return;
@@ -94,13 +172,21 @@ document.getElementById('hint-btn').onclick = () => {
   const match = g.moves({verbose:true}).find(m => m.san === expected.san.replace(/[!?]+$/,''));
   if(match) flashSquares('#train-board', [match.from, match.to], 'hint-square', 900);
 };
-document.getElementById('reset-btn').onclick = () => { if(currentLine) loadLine(currentLine, currentLineKey); };
+document.getElementById('reset-btn').onclick = () => {
+  if(currentLine){
+    openingCelebrationShown = false; hintsUsed = 0;
+    document.getElementById('opening-reward').classList.add('hidden');
+    loadLine(currentLine, currentLineKey);
+  }
+};
 document.getElementById('autohint-toggle').onclick = function(){
   autoHintEnabled = !autoHintEnabled;
   this.classList.toggle('active', autoHintEnabled);
+  this.querySelector('small').textContent = autoHintEnabled ? 'Activé' : 'Désactivé';
   if(!autoHintEnabled) $('#train-board [data-square]').removeClass('suggest-from suggest-to');
   else showExpectedMove();
 };
+document.getElementById('replay-btn').onclick = () => document.getElementById('reset-btn').click();
 
 /* Sélecteur rapide (favoris) */
 const quickKeys = CATEGORIES.find(c=>c.key==='favorites').lines;
