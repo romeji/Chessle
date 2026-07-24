@@ -30,6 +30,7 @@
 }
 .home-tile:active{transform:scale(0.95);}
 .home-tile-icon{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.home-tiles .home-tile:last-child:nth-child(odd){grid-column:1/-1;flex-direction:row;align-items:center;justify-content:flex-start;}
 .tile-purple{background:linear-gradient(160deg,#8C7FF5,var(--tile-purple)); box-shadow:0 8px 16px rgba(124,110,240,0.32);}
 .tile-green{background:linear-gradient(160deg,#4FCB8C,var(--tile-green)); box-shadow:0 8px 16px rgba(60,184,120,0.3);}
 .tile-orange{background:linear-gradient(160deg,#FFB65C,var(--tile-orange)); box-shadow:0 8px 16px rgba(255,165,61,0.3);}
@@ -73,6 +74,7 @@
   text-align:center;box-shadow:0 -14px 40px rgba(30,27,46,0.18);
   animation:landingCardUp .45s cubic-bezier(.34,1.2,.64,1);
 }
+.landing-logo{width:74px;height:74px;display:block;margin:0 auto 10px;filter:drop-shadow(0 10px 20px rgba(36,31,61,0.16));}
 .landing-title{font-family:var(--font-display);font-weight:800;font-size:2.3rem;color:var(--navy);margin:0 0 6px;}
 .landing-title .accent{color:var(--coral);}
 .landing-tagline{color:var(--text-dim);font-size:0.92rem;margin:0 0 22px;font-weight:600;}

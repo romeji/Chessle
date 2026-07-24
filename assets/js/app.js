@@ -116,3 +116,14 @@ function initOnboarding(){
   if(skipBtn) skipBtn.onclick = dismiss;
 }
 document.addEventListener('DOMContentLoaded', initOnboarding);
+
+/* ---- PWA : installation propre et navigation dans le scope de l'app ---- */
+function initPwa(){
+  if(!('serviceWorker' in navigator)) return;
+  const isFile = window.location.protocol === 'file:';
+  if(isFile) return;
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+initPwa();

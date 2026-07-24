@@ -5,8 +5,18 @@
    La navigation elle-même se fait via de vrais liens <a href="...">.
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
-  const current = document.body.dataset.page;
+  const aliases = {
+    puzzles: 'play',
+    analyze: 'home',
+    analysis: 'home',
+    settings: 'profile'
+  };
+  const current = aliases[document.body.dataset.page] || document.body.dataset.page;
   document.querySelectorAll('.tabbar-item').forEach(item => {
     item.classList.toggle('active', item.dataset.tab === current);
+    const target = item.getAttribute('data-href');
+    if(target){
+      item.addEventListener('click', () => window.location.assign(target));
+    }
   });
 });
